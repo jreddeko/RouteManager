@@ -1,0 +1,186 @@
+﻿.navbar-default {
+    background-color: #3F51B5;
+    border-color: #303F9F;
+    color: rgba(255,255,255,.87);
+}
+
+.navbar {
+    border-radius: 0;
+}
+
+.panel-default {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+.panel-default > .panel-heading {
+    color: rgba(255,255,255,.87);
+    background-color: #5C6BC0;
+    border-color: #ddd;
+}
+
+.panel-default > .panel-heading > a > i.fa{
+    color: white;
+}
+
+i.fa.fa-circle.fa-stack-2x {
+    color: rgba(0, 0, 0, 0.71);
+}
+.navbar-default .navbar-brand {
+    color: rgba(255,255,255,.87);
+}
+
+.navbar-default .navbar-nav>li>a {
+    color: rgba(255,255,255,.87);
+}
+.text-primary {
+    color: white;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    background-color: #F5F5F5;
+} 
+::-webkit-scrollbar-thumb {
+    background-color: #ddd;
+}
+
+html, body {
+    height: 100vh;
+    overflow:hidden;
+    color:black;
+    background-color:#FAFAFA;
+}
+
+.p1 {
+    height: 80%;
+    overflow: auto;
+}
+
+.p2 {
+    height: 55%;
+    overflow: auto;
+}
+
+.p3 {
+    height: 18%;
+    overflow: auto;
+}
+
+/* TABLE */
+table {
+    font-family: sans-serif;
+    width: 100%;
+    border-collapse: separate;
+    table-layout: auto;
+}
+
+    table thead tr th {
+        padding: 0.5em;
+        text-align: center;
+        border-bottom: 1px solid #dddddd;
+    }
+
+        table thead tr th:first-child {
+            border-radius: 3px 0 0 0;
+        }
+
+        table thead tr th:last-child {
+            border-radius: 0 3px 0 0;
+        }
+
+        table thead tr th .day {
+            display: block;
+            font-size: 1.2em;
+            border-radius: 50%;
+            width: 30px;
+            margin: 0 auto;
+            padding: 5px;
+        }
+
+            table thead tr th .day.active {
+                background: #d1d5db;
+                color: #626E7E;
+            }
+
+        table thead tr th .short {
+            display: none;
+        }
+
+        table thead tr th i {
+            vertical-align: middle;
+            font-size: 2em;
+        }
+
+    table tbody tr td {
+        border-bottom: 1px solid #dddddd;
+    }
+
+    table tbody tr td {
+        text-align: center;
+        vertical-align: middle;
+        position: relative;
+        padding: 10px;
+    }
+
+        table tbody tr td.site {
+            border-right: 1px solid #dddddd;
+        }
+
+        table tbody tr td.site {
+            font-size: 2em;
+            padding: 0;
+            background: #fff;
+            border-bottom: 1px solid #dddddd;
+            border-collapse: separate;
+            min-width: 100px;
+            cursor: default;
+        }
+
+        table tbody tr td.hour span {
+            display: block;
+        }
+
+@media (max-width: 60em) {
+    table thead tr th .long {
+        display: none;
+    }
+
+    table thead tr th .short {
+        display: block;
+    }
+
+    table tbody tr td.hour span {
+        transform: rotate(270deg);
+        -webkit-transform: rotate(270deg);
+        -moz-transform: rotate(270deg);
+    }
+}
+
+@media (max-width: 27em) {
+    table thead tr th {
+        font-size: 65%;
+    }
+
+        table thead tr th .day {
+            display: block;
+            font-size: 1.2em;
+            border-radius: 50%;
+            width: 20px;
+            margin: 0 auto 5px;
+            padding: 5px;
+        }
+
+            table thead tr th .day.active {
+                background: #d1d5db;
+                color: #626E7E;
+            }
+
+    table tbody tr td.hour {
+        font-size: 1.7em;
+    }
+
+        table tbody tr td.hour span {
+            transform: translateY(16px) rotate(270deg);
+            -webkit-transform: translateY(16px) rotate(270deg);
+            -moz-transform: translateY(16px) rotate(270deg);
+        }
+}
