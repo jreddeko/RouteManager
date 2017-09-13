@@ -1,0 +1,374 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="RoutingModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Day">
+          <Key>
+            <PropertyRef Name="DayID" />
+          </Key>
+          <Property Name="DayID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HasDelivery" Type="bit" Nullable="false" />
+          <Property Name="IncrementByDays" Type="int" Nullable="false" />
+          <Property Name="CutOff" Type="time" Precision="7" Nullable="false" />
+          <Property Name="SiteOrderTypeID" Type="int" Nullable="false" />
+          <Property Name="DateOfWeek" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderType">
+          <Key>
+            <PropertyRef Name="OrderTypeID" />
+          </Key>
+          <Property Name="OrderTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Route">
+          <Key>
+            <PropertyRef Name="RouteID" />
+          </Key>
+          <Property Name="RouteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RouteSite">
+          <Key>
+            <PropertyRef Name="RouteSiteID" />
+          </Key>
+          <Property Name="RouteSiteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RouteID" Type="int" Nullable="false" />
+          <Property Name="SiteID" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Site">
+          <Key>
+            <PropertyRef Name="SiteID" />
+          </Key>
+          <Property Name="SiteID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SiteOrderType">
+          <Key>
+            <PropertyRef Name="SiteOrderTypeID" />
+          </Key>
+          <Property Name="SiteOrderTypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RouteSiteID" Type="int" Nullable="false" />
+          <Property Name="OrderTypeID" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Day_SiteOrderType">
+          <End Role="SiteOrderType" Type="Self.SiteOrderType" Multiplicity="1" />
+          <End Role="Day" Type="Self.Day" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SiteOrderType">
+              <PropertyRef Name="SiteOrderTypeID" />
+            </Principal>
+            <Dependent Role="Day">
+              <PropertyRef Name="SiteOrderTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RouteSite_Route">
+          <End Role="Route" Type="Self.Route" Multiplicity="1" />
+          <End Role="RouteSite" Type="Self.RouteSite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Route">
+              <PropertyRef Name="RouteID" />
+            </Principal>
+            <Dependent Role="RouteSite">
+              <PropertyRef Name="RouteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RouteSite_Site">
+          <End Role="Site" Type="Self.Site" Multiplicity="1" />
+          <End Role="RouteSite" Type="Self.RouteSite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Site">
+              <PropertyRef Name="SiteID" />
+            </Principal>
+            <Dependent Role="RouteSite">
+              <PropertyRef Name="SiteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SiteOrderType_OrderType">
+          <End Role="OrderType" Type="Self.OrderType" Multiplicity="1" />
+          <End Role="SiteOrderType" Type="Self.SiteOrderType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderType">
+              <PropertyRef Name="OrderTypeID" />
+            </Principal>
+            <Dependent Role="SiteOrderType">
+              <PropertyRef Name="OrderTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SiteOrderType_RouteSite">
+          <End Role="RouteSite" Type="Self.RouteSite" Multiplicity="1" />
+          <End Role="SiteOrderType" Type="Self.SiteOrderType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RouteSite">
+              <PropertyRef Name="RouteSiteID" />
+            </Principal>
+            <Dependent Role="SiteOrderType">
+              <PropertyRef Name="RouteSiteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RoutingModelStoreContainer">
+          <EntitySet Name="Day" EntityType="Self.Day" Schema="Route" store:Type="Tables" />
+          <EntitySet Name="OrderType" EntityType="Self.OrderType" Schema="Route" store:Type="Tables" />
+          <EntitySet Name="Route" EntityType="Self.Route" Schema="Route" store:Type="Tables" />
+          <EntitySet Name="RouteSite" EntityType="Self.RouteSite" Schema="Route" store:Type="Tables" />
+          <EntitySet Name="Site" EntityType="Self.Site" Schema="Route" store:Type="Tables" />
+          <EntitySet Name="SiteOrderType" EntityType="Self.SiteOrderType" Schema="Route" store:Type="Tables" />
+          <AssociationSet Name="FK_Day_SiteOrderType" Association="Self.FK_Day_SiteOrderType">
+            <End Role="SiteOrderType" EntitySet="SiteOrderType" />
+            <End Role="Day" EntitySet="Day" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RouteSite_Route" Association="Self.FK_RouteSite_Route">
+            <End Role="Route" EntitySet="Route" />
+            <End Role="RouteSite" EntitySet="RouteSite" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RouteSite_Site" Association="Self.FK_RouteSite_Site">
+            <End Role="Site" EntitySet="Site" />
+            <End Role="RouteSite" EntitySet="RouteSite" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SiteOrderType_OrderType" Association="Self.FK_SiteOrderType_OrderType">
+            <End Role="OrderType" EntitySet="OrderType" />
+            <End Role="SiteOrderType" EntitySet="SiteOrderType" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SiteOrderType_RouteSite" Association="Self.FK_SiteOrderType_RouteSite">
+            <End Role="RouteSite" EntitySet="RouteSite" />
+            <End Role="SiteOrderType" EntitySet="SiteOrderType" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="RoutingModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="OrderType">
+          <Key>
+            <PropertyRef Name="OrderTypeID" />
+          </Key>
+          <Property Name="OrderTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="SiteOrderTypes" Relationship="RoutingModel.FK_SiteOrderType_OrderType" FromRole="OrderType" ToRole="SiteOrderType" />
+        </EntityType>
+        <EntityType Name="Route">
+          <Key>
+            <PropertyRef Name="RouteID" />
+          </Key>
+          <Property Name="RouteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <NavigationProperty Name="RouteSites" Relationship="Self.FK_RouteSite_Route" FromRole="Route" ToRole="RouteSite" />
+        </EntityType>
+        <EntityType Name="RouteSite">
+          <Key>
+            <PropertyRef Name="RouteSiteID" />
+          </Key>
+          <Property Name="RouteSiteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RouteID" Type="Int32" Nullable="false" />
+          <Property Name="SiteID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Route" Relationship="Self.FK_RouteSite_Route" FromRole="RouteSite" ToRole="Route" />
+          <NavigationProperty Name="Site" Relationship="Self.FK_RouteSite_Site" FromRole="RouteSite" ToRole="Site" />
+          <NavigationProperty Name="SiteOrderTypes" Relationship="RoutingModel.FK_SiteOrderType_RouteSite" FromRole="RouteSite" ToRole="SiteOrderType" />
+          </EntityType>
+        <EntityType Name="Site">
+          <Key>
+            <PropertyRef Name="SiteID" />
+          </Key>
+          <Property Name="SiteID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="RouteSites" Relationship="Self.FK_RouteSite_Site" FromRole="Site" ToRole="RouteSite" />
+        </EntityType>
+        <Association Name="FK_RouteSite_Route">
+          <End Role="Route" Type="Self.Route" Multiplicity="1" />
+          <End Role="RouteSite" Type="Self.RouteSite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Route">
+              <PropertyRef Name="RouteID" />
+            </Principal>
+            <Dependent Role="RouteSite">
+              <PropertyRef Name="RouteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RouteSite_Site">
+          <End Role="Site" Type="Self.Site" Multiplicity="1" />
+          <End Role="RouteSite" Type="Self.RouteSite" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Site">
+              <PropertyRef Name="SiteID" />
+            </Principal>
+            <Dependent Role="RouteSite">
+              <PropertyRef Name="SiteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="RoutingEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="OrderTypes" EntityType="Self.OrderType" />
+          <EntitySet Name="Routes" EntityType="Self.Route" />
+          <EntitySet Name="RouteSites" EntityType="Self.RouteSite" />
+          <EntitySet Name="Sites" EntityType="Self.Site" />
+          <AssociationSet Name="FK_RouteSite_Route" Association="Self.FK_RouteSite_Route">
+            <End Role="Route" EntitySet="Routes" />
+            <End Role="RouteSite" EntitySet="RouteSites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RouteSite_Site" Association="Self.FK_RouteSite_Site">
+            <End Role="Site" EntitySet="Sites" />
+            <End Role="RouteSite" EntitySet="RouteSites" />
+          </AssociationSet>
+          <EntitySet Name="Days" EntityType="RoutingModel.Day" />
+          <EntitySet Name="SiteOrderTypes" EntityType="RoutingModel.SiteOrderType" />
+          <AssociationSet Name="FK_Day_SiteOrderType" Association="RoutingModel.FK_Day_SiteOrderType">
+            <End Role="SiteOrderType" EntitySet="SiteOrderTypes" />
+            <End Role="Day" EntitySet="Days" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SiteOrderType_OrderType" Association="RoutingModel.FK_SiteOrderType_OrderType">
+            <End Role="OrderType" EntitySet="OrderTypes" />
+            <End Role="SiteOrderType" EntitySet="SiteOrderTypes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SiteOrderType_RouteSite" Association="RoutingModel.FK_SiteOrderType_RouteSite">
+            <End Role="RouteSite" EntitySet="RouteSites" />
+            <End Role="SiteOrderType" EntitySet="SiteOrderTypes" />
+          </AssociationSet>
+          </EntityContainer>
+        <EntityType Name="Day">
+          <Key>
+            <PropertyRef Name="DayID" />
+          </Key>
+          <Property Name="DayID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HasDelivery" Type="Boolean" Nullable="false" />
+          <Property Name="IncrementByDays" Type="Int32" Nullable="false" />
+          <Property Name="CutOff" Type="Time" Nullable="false" Precision="7" />
+          <Property Name="SiteOrderTypeID" Type="Int32" Nullable="false" />
+          <Property Name="DateOfWeek" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="SiteOrderType" Relationship="RoutingModel.FK_Day_SiteOrderType" FromRole="Day" ToRole="SiteOrderType" />
+        </EntityType>
+        <EntityType Name="SiteOrderType">
+          <Key>
+            <PropertyRef Name="SiteOrderTypeID" />
+          </Key>
+          <Property Name="SiteOrderTypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RouteSiteID" Type="Int32" Nullable="false" />
+          <Property Name="OrderTypeID" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Days" Relationship="RoutingModel.FK_Day_SiteOrderType" FromRole="SiteOrderType" ToRole="Day" />
+          <NavigationProperty Name="OrderType" Relationship="RoutingModel.FK_SiteOrderType_OrderType" FromRole="SiteOrderType" ToRole="OrderType" />
+          <NavigationProperty Name="RouteSite" Relationship="RoutingModel.FK_SiteOrderType_RouteSite" FromRole="SiteOrderType" ToRole="RouteSite" />
+        </EntityType>
+        <Association Name="FK_Day_SiteOrderType">
+          <End Type="RoutingModel.SiteOrderType" Role="SiteOrderType" Multiplicity="1" />
+          <End Type="RoutingModel.Day" Role="Day" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SiteOrderType">
+              <PropertyRef Name="SiteOrderTypeID" />
+            </Principal>
+            <Dependent Role="Day">
+              <PropertyRef Name="SiteOrderTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SiteOrderType_OrderType">
+          <End Type="RoutingModel.OrderType" Role="OrderType" Multiplicity="1" />
+          <End Type="RoutingModel.SiteOrderType" Role="SiteOrderType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="OrderType">
+              <PropertyRef Name="OrderTypeID" />
+            </Principal>
+            <Dependent Role="SiteOrderType">
+              <PropertyRef Name="OrderTypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SiteOrderType_RouteSite">
+          <End Type="RoutingModel.RouteSite" Role="RouteSite" Multiplicity="1" />
+          <End Type="RoutingModel.SiteOrderType" Role="SiteOrderType" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RouteSite">
+              <PropertyRef Name="RouteSiteID" />
+            </Principal>
+            <Dependent Role="SiteOrderType">
+              <PropertyRef Name="RouteSiteID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="RoutingModelStoreContainer" CdmEntityContainer="RoutingEntities">
+          <EntitySetMapping Name="OrderTypes">
+            <EntityTypeMapping TypeName="RoutingModel.OrderType">
+              <MappingFragment StoreEntitySet="OrderType">
+                <ScalarProperty Name="OrderTypeID" ColumnName="OrderTypeID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Routes">
+            <EntityTypeMapping TypeName="RoutingModel.Route">
+              <MappingFragment StoreEntitySet="Route">
+                <ScalarProperty Name="RouteID" ColumnName="RouteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RouteSites">
+            <EntityTypeMapping TypeName="RoutingModel.RouteSite">
+              <MappingFragment StoreEntitySet="RouteSite">
+                <ScalarProperty Name="RouteSiteID" ColumnName="RouteSiteID" />
+                <ScalarProperty Name="RouteID" ColumnName="RouteID" />
+                <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Sites">
+            <EntityTypeMapping TypeName="RoutingModel.Site">
+              <MappingFragment StoreEntitySet="Site">
+                <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Days">
+            <EntityTypeMapping TypeName="RoutingModel.Day">
+              <MappingFragment StoreEntitySet="Day">
+                <ScalarProperty Name="DateOfWeek" ColumnName="DateOfWeek" />
+                <ScalarProperty Name="SiteOrderTypeID" ColumnName="SiteOrderTypeID" />
+                <ScalarProperty Name="CutOff" ColumnName="CutOff" />
+                <ScalarProperty Name="IncrementByDays" ColumnName="IncrementByDays" />
+                <ScalarProperty Name="HasDelivery" ColumnName="HasDelivery" />
+                <ScalarProperty Name="DayID" ColumnName="DayID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SiteOrderTypes">
+            <EntityTypeMapping TypeName="RoutingModel.SiteOrderType">
+              <MappingFragment StoreEntitySet="SiteOrderType">
+                <ScalarProperty Name="OrderTypeID" ColumnName="OrderTypeID" />
+                <ScalarProperty Name="RouteSiteID" ColumnName="RouteSiteID" />
+                <ScalarProperty Name="SiteOrderTypeID" ColumnName="SiteOrderTypeID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

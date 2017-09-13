@@ -1,97 +1,68 @@
-﻿<div class="row">
+﻿@model RouteManagement.ViewModels.HomeViewModel
+@{
+    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    serializer.MaxJsonLength = Int32.MaxValue;
+    var jsonModel = serializer.Serialize(Model);
+}
+<script>
+    var model = @Html.Raw(jsonModel);
+    window.preLoadeddata = model;
+</script>
+<div class="row" id="app">
     <div class="col-xs-3">
         <div class="panel panel-default">
             <div class="panel-heading paper-font-subhead">
                 Route List
             </div>
             <div class="list-group p1">
-                @for (int i = 0; i < 250; i++)
-                {
-                    <a href="#" class="list-group-item list-group-item-action">Route: @i</a>
-                }
+                <a href="#"
+                   v-for="route in routes"
+                   key="route.RouteID"
+                   class="list-group-item list-group-item-action"
+                   v-on:click="displayRouteInfo(item)">
+                    Route: {{route.RouteID}}
+                </a>
             </div>
         </div>
     </div>
     <div class="col-xs-9">
         <div class="panel panel-default">
             <div class="panel-heading paper-font-subhead">
-                <span>Route Information</span>
+                <span>Route #{{ selectedRoute.RouteID }}</span>
             </div>
             <div class="p2">
-                <table class="paper-font-body1">
-                    <thead>
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <route-day v-for="day in dayList" v-bind:day="day" v-bind:key="day.id">
-                            </route-day>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td class="site" rowspan="3"><span>Site 1</span></td>
-                            <td class="order-type">Regular</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                        </tr>
-                        <tr>
-                            <td>Pet Food</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                        </tr>
-                        <tr>
-                            <td>Fridge</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                        </tr>
-                        <tr>
-                            <td class="site" rowspan="3"><span>Site 2</span></td>
-                            <td>Regular</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                        </tr>
-                        <tr>
-                            <td>Pet Food</</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                        </tr>
-                        <tr>
-                            <td>Fridge</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                            <td>@Html.Partial("_DeliveryInfoPartial")</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <form v-on:submit.prevent="onSubmit" id="route-info-form" method="post">
+                    <div v-for="routeSite in selectedRoute.RouteSites" class="site-info">
+                        <table class="paper-font-body1">
+                            <thead>
+                                <tr>
+                                    <th>{{ routeSite.Site.Name }}</th>
+                                    <th v-for="day in routeSite.SiteOrderTypes[0].Days">
+                                        <span class="day">{{ day.GetDay }}</span><span class="long">{{ day.GetDayName }}</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="siteOrderType in routeSite.SiteOrderTypes">
+                                    <td class="order-type">{{ siteOrderType.OrderType.Name }}</td>
+                                    <td v-for="day in siteOrderType.Days">
+                                        <delivery-info id="show-modal"
+                                                       v-bind:day="day"
+                                                       v-bind:delivery="day.HasDelivery"
+                                                       v-on:change="delivery => {day.HasDelivery = delivery }">
+                                        </delivery-info>
+                                        <daysinc-info v-model="day.IncrementByDays">
+                                        </daysinc-info>
+                                        <cutoff-info v-model="day.CutOffString"></cutoff-info>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="btn-group" data-toggle="buttons">
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                    </div>
+                </form>
             </div>
         </div>
         <div class="panel panel-default">
@@ -127,3 +98,5 @@
         </div>
     </div>
 </div>
+@Html.Partial("Modal")
+<script src="/Templates/index.js"></script>
