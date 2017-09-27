@@ -1,17 +1,42 @@
 ﻿/* BRANDING */
-
+.ul.nav.navbar-nav {
+    
+  font-family: 'Roboto', 'Noto', sans-serif;
+  -webkit-font-smoothing: antialiased;  /* OS X subpixel AA bleed bug */
+  text-rendering: optimizeLegibility;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 24px;
+}
+#logoutForm {    
+    margin-bottom: 0;
+}
 .navbar-default {
     background-color: #3F51B5;
     border-color: #303F9F;
     color: rgba(255,255,255,.87);
 }
-
+.navbar-default .navbar-nav>li>a:focus, .navbar-default .navbar-nav>li>a:hover {
+    color: #BDBDBD;
+}
+.navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus {
+    color: #E0E0E0;
+    background-color: transparent;
+}
 .navbar {
     border-radius: 0;
 }
 .navbar-default .navbar-brand {
     color: rgba(255,255,255,.87);
 }
+.navbar-form > .input-group > .input-group-btn > button {    
+    background-color: #E0E0E0;
+    color: black;
+}
+
 .text-primary {
     color: white;
 }
@@ -29,21 +54,53 @@
 }
 
 html, body {
-    height: 100vh;
-    overflow:hidden;
     color:black;
     background-color:#FAFAFA;
 }
 
+/* PANELS START*/
 .panel-default {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-color:#BDBDBD;
 }
 .panel-default > .panel-heading {
-    color: rgba(255,255,255,.87);
-    background-color: #5C6BC0;
-    border-color: #ddd;
+    color: black;
+    background-color: #E0E0E0;
+    border-color: #BDBDBD;
 }
 
 .panel-default > .panel-heading > a > i.fa{
     color: white;
+}
+.panel-primary {
+    border-color:#BDBDBD;
+}
+.panel-primary > .panel-heading {
+    color: black;
+    background-color: #FFF;
+    border-color:#BDBDBD;
+}
+
+/* PANELS END*/
+a.list-group-item:hover,
+a.list-group-item:focus,
+a.list-group-item:active {
+    background-color: #F5F5F5;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
+.list-group-item .list-group-item-action{
+  background-color: black;
+
+}
+
+.list-group-item-action:hover{
+    background-color:#E0E0E0;
+}
+
+button.btn.btn-success {
+    background-color:#E0E0E0;
+    border-color: #BDBDBD;
+    color:black;
 }

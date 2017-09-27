@@ -10,6 +10,7 @@ namespace RouteManagement.Models
     public class ApplicationUser : IdentityUser
     {
         public string Hometown { get; set; }
+        public string Name { get; internal set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {

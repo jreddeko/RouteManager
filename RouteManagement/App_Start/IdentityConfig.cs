@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using RouteManagement.Models;
+using RouteManagement.Models.Services;
 
 namespace RouteManagement
 {
@@ -35,6 +36,7 @@ namespace RouteManagement
     // Configure the application user manager which is used in this application.
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
+        ActiveDirectoryService _activeDirectoryService = new ActiveDirectoryService("WDDCHO");
         public ApplicationUserManager(IUserStore<ApplicationUser> store)
             : base(store)
         {
@@ -86,11 +88,80 @@ namespace RouteManagement
             }
             return manager;
         }
+        public override Task<ApplicationUser> FindAsync(string userName, string password)
+        {
+            if (_activeDirectoryService.ValidateCredentials(userName, password))
+                return Task.Run(() => _activeDirectoryService.GetUser(userName));
+            else
+                return null;
+        }
+
+        public override Task<ApplicationUser> FindAsync(UserLoginInfo login)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<ApplicationUser> FindByEmailAsync(string email)
+        {
+            return Task.Run(() => _activeDirectoryService.GetUserByEmail(email));
+        }
+
+        public override Task<ApplicationUser> FindByIdAsync(string userId)
+        {
+            return Task.Run(() => _activeDirectoryService.GetUser(userId));
+        }
+
+        public override Task<ApplicationUser> FindByNameAsync(string userName)
+        {
+            return Task.Run(() => _activeDirectoryService.GetUser(userName));
+        }
+
+        public override Task<IdentityResult> ChangePhoneNumberAsync(string userId, string phoneNumber, string token)
+        {
+            throw new NotImplementedException();
+        }
+        public override Task<string> GetPhoneNumberAsync(string userId)
+        {
+            return Task.Run(() => _activeDirectoryService.GetUser(userId).PhoneNumber);
+        }
+
+        public override Task<IdentityResult> SetPhoneNumberAsync(string userId, string phoneNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<string> GenerateChangePhoneNumberTokenAsync(string userId, string phoneNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<bool> IsPhoneNumberConfirmedAsync(string userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<IList<string>> GetRolesAsync(string userId)
+        {
+            return Task.Run(() => _activeDirectoryService.GetRoles(userId));
+        }
+
+        public override Task<ClaimsIdentity> CreateIdentityAsync(ApplicationUser user, string authenticationType)
+        {
+            IList<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName),
+            };
+
+            return Task.Run(() => new ClaimsIdentity(claims, authenticationType));
+        }
     }
 
     // Configure the application sign-in manager which is used in this application.  
     public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
     {
+        ActiveDirectoryService _activeDirectoryService = new ActiveDirectoryService("WDDCHO");
         public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager) :
             base(userManager, authenticationManager)
         { }
@@ -103,6 +174,33 @@ namespace RouteManagement
         public static ApplicationSignInManager Create(IdentityFactoryOptions<ApplicationSignInManager> options, IOwinContext context)
         {
             return new ApplicationSignInManager(context.GetUserManager<ApplicationUserManager>(), context.Authentication);
+        }
+
+        public override Task<SignInStatus> PasswordSignInAsync(string userName, string password, bool isPersistent, bool shouldLockout)
+        {
+            return Task.Run(() => validateCredentials("WDDCHO", userName, password));
+        }
+
+        private SignInStatus validateCredentials(string v, string userName, string password)
+        {
+            var authorized = _activeDirectoryService.ValidateCredentials(userName, password);
+            if (!authorized)
+                return SignInStatus.Failure;
+
+            var user = _activeDirectoryService.GetUserByEmail(userName);
+
+            IList<Claim> claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.UserName),
+            };
+
+            ClaimsIdentity identity = new ClaimsIdentity(claims, AuthenticationType);
+
+            this.AuthenticationManager.SignIn(identity);
+            return SignInStatus.Success;
+
         }
     }
 }

@@ -1,52 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RouteManagement.DB.Framework.Repository
+namespace Wddc.DB.Framework.Repository
 {
-    public class RouteRepository : Repository<Route>
+    internal class RouteRepository : IDisposable
     {
-        public RouteRepository(RoutingEntities dbContext) : base(dbContext)
+        private RoutingEntities _dbContext;
+
+        public RouteRepository(RoutingEntities dbContext)
         {
+            this._dbContext = dbContext;
         }
 
-        public override void Delete(Route entity)
+        public IEnumerable<Route> GetAll()
         {
-            base.Delete(entity);
+            return _dbContext.Routes;
         }
 
-        public override IQueryable<Route> GetAll()
+        public Route GetByID(int id)
         {
-            return _include(base.GetAll());
+            return _dbContext.Routes.Find(id);
         }
 
-        public override Route GetById(int id)
+        public void Insert(Route route)
         {
-            return _include(_getAll().Where(r => r.RouteID == id))
-                .First();
+            _dbContext.Routes.Add(route);
         }
 
-        public override IQueryable<Route> SearchFor(Expression<Func<Route, bool>> predicate)
+        public void Delete(int routeID)
         {
-            return _include(base.SearchFor(predicate));
+            var student = _dbContext.Routes.Find(routeID);
+            _dbContext.Routes.Remove(student);
         }
 
-        private IQueryable<Route> _include(IQueryable<Route> queryable)
+        public void Update(Route route)
         {
-            return queryable
-                .Include(i => i.RouteSites)
-                .Include(i => i.RouteSites.Select(rs => rs.Site))
-                .Include(i => i.RouteSites.Select(rs => rs.SiteOrderTypes.Select(sot => sot.OrderType)))
-                .Include(i => i.RouteSites.Select(rs => rs.SiteOrderTypes.Select(sot => sot.Days)));
+            _dbContext.Routes.AddOrUpdate(route);
+            foreach (var site in route.RouteSites)
+            {
+                _dbContext.RouteSites.AddOrUpdate(site);
+                foreach (var siteOrderType in site.SiteOrderTypes)
+                {
+                    _dbContext.SiteOrderTypes.AddOrUpdate(siteOrderType);
+                    foreach (var day in siteOrderType.DeliveryDateDefaults)
+                    {
+                        _dbContext.DeliveryDateDefaults.AddOrUpdate(day);
+                        foreach (var exception in day.DeliveryDateExceptions)
+                        {
+                            _dbContext.DeliveryDateExceptions.AddOrUpdate(exception);
+                        }
+                    }
+                }
+            }
         }
 
-        private IQueryable<Route> _getAll()
+        public void Save()
         {
-            return _include(base.GetAll());
+            _dbContext.SaveChanges();
+        }
+
+        private bool disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    _dbContext.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

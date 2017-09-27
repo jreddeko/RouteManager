@@ -1,0 +1,21 @@
+﻿@model Wddc.Resources.Entities.Member
+
+<div class="list-group-item list-group-item-action">
+    <div class="row">
+        <div class="col-xs-4">
+            <div>@Html.DisplayFor(model => model.id): @Html.DisplayFor(model => model.Information.Name)</div>
+        </div>
+        <div class="col-xs-2">
+            <div>@Html.DisplayFor(model => model.Information.City), @Html.DisplayFor(model => model.Information.State)</div>
+        </div>
+        <div class="col-xs-3">
+            @foreach (var carrier in Model.Carrier)
+            {
+                <div><strong>@carrier.CARRIER_ID</strong>: @carrier.SHIPVIA</div>
+            }
+        </div>
+        <div class="col-xs-3">
+            <div class="text-danger">Requires Shipping Setup</div>
+        </div>
+    </div>
+</div>

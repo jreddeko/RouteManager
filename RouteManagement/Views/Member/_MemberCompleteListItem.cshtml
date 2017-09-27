@@ -1,0 +1,63 @@
+﻿@model Wddc.Resources.Entities.Member
+
+<a href="@Url.Action("Edit", new { id = Model.id })"
+   class="list-group-item list-group-item-action">
+    <div class="row">
+        <div class="col-xs-4">
+            <div>@Html.DisplayFor(model => model.id): @Html.DisplayFor(model => model.Information.Name)</div>
+        </div>
+        <div class="col-xs-2">
+            <div>@Html.DisplayFor(model => model.Information.City), @Html.DisplayFor(model => model.Information.State)</div>
+        </div>
+        <div class="col-xs-3">
+            @foreach (var carrier in Model.Carrier)
+            {
+                <div><strong>@carrier.CARRIER_ID</strong>: @carrier.SHIPVIA</div>
+            }
+        </div>
+        <div class="col-xs-3">
+            <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="Delayed Billing">
+                <i class="fa fa-money fa-stack-1x" aria-hidden="true"></i>
+                @if (@Model.Route.DelayedBilling == "No")
+                {
+                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                }
+                else if (@Model.Route.DelayedBilling == "Decide on Order")
+                {
+                    <i class="fa fa-asterisk fa-stack-2x text-warning" aria-hidden="true"></i>
+                }
+                else
+                {
+                    <i class="fa fa-square-o fa-stack-2x text-success"></i>
+                }
+            </span>
+            <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="Pet Food">
+                <i class="fa fa-cutlery fa-stack-1x" aria-hidden="true"></i>
+                @if (@Model.Route.PetFood == "No")
+                {
+                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                }
+                else if (@Model.Route.PetFood == "Decide on Order")
+                {
+                    <i class="fa fa-asterisk fa-stack-2x text-warning" aria-hidden="true"></i>
+                }
+                else
+                {
+                    <i class="fa fa-square-o fa-stack-2x text-success"></i>
+                }
+            </span>
+            <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="Shipping Charge">
+                <i class="fa fa-usd fa-stack-1x"></i>
+                @if (!@Model.Route.ShippingCharge)
+                {
+                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                }
+                else
+                {
+                    <i class="fa fa-square-o fa-stack-2x text-success"></i>
+                }
+            </span>
+        </div>
+    </div>
+</a>
+

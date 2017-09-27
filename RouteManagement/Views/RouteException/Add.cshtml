@@ -1,0 +1,96 @@
+﻿@model RouteManagement.ViewModels.AddRouteExceptionViewModel
+@{
+    ViewBag.Title = "Add New Exception";
+}
+@section datetimepickerstyles {
+    @*NUGET PACKAGE*@
+    <link rel="stylesheet" href="~/Content/bootstrap-datetimepicker.min.css" />
+}
+@section datetimepickerscripts {
+    <script type="text/javascript" src="https://momentjs.com/downloads/moment.js"></script>
+    @*NUGET PACKAGE*@
+    <script type="text/javascript" src="~/scripts/bootstrap-datetimepicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker1').datetimepicker({
+                format: 'YYYY-MM-DD',
+                date: @Html.Raw(Json.Encode(Model.ExceptionDate)),
+            });
+            $('#datetimepicker3').datetimepicker({
+                format: 'YYYY-MM-DD',
+            });
+        });
+    </script>
+}
+
+<div class="row">
+
+    <div class="col-xs-12">
+        <div class="panel panel-default">
+            <div class="panel-heading paper-font-subhead">
+                New Exception
+            </div>
+            <div class="panel-body">
+                <div class="container">
+                @using (Html.BeginForm("Add", "RouteException", FormMethod.Post))
+                {
+                        <div class="panel panel-primary">
+                            <div class="panel-heading paper-font-subhead">
+                                Exception Dates
+                            </div>
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class='col-sm-6'>
+                                        @Html.LabelFor(model => model.ExceptionDate)
+                                        <div class="input-group date" id='datetimepicker1'>
+                                            <input type='text' name="ExceptionDate" class="form-control" />
+                                            <span class="input-group-addon">
+                                                <span class="glyphicon glyphicon-calendar"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class='col-sm-6'>
+                                        @Html.LabelFor(model => model.ClonedDate)
+                                        @Html.EditorFor(model => model.ClonedDate)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading paper-font-subhead">
+                                Available Order Types
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group">
+
+                                    @for (int i = 0; i < Model.AvailableOrderTypes.Count(); i++)
+                                    {
+                                        @Html.HiddenFor(model => model.AvailableOrderTypes[i].Value)
+                                        @Html.CheckBoxFor(model => model.AvailableOrderTypes[i].Selected)
+                                        <label> @Model.AvailableOrderTypes[i].Text</label><br />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading paper-font-subhead">
+                                Available Routes
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    @for (int i = 0; i < Model.AvailableRoutes.Count(); i++)
+                                    {
+                                        @Html.HiddenFor(model => model.AvailableRoutes[i].Value)
+                                        @Html.CheckBoxFor(model => model.AvailableRoutes[i].Selected, new { @checked="checked"})
+                                        <label> @Model.AvailableRoutes[i].Text</label><br />
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <input type="submit" value="Upload" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+﻿@model RouteManagement.ViewModels.MemberViewModels.EditViewModel
+
+@{
+    ViewBag.Title = String.Format("Edit ~ #{0}: {1}", Model.ID,  Model.Member.Information.Name);
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        @ViewBag.Title
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                Delivery Settings:
+            </div>
+            <div class="panel-body">
+                @using (Html.BeginForm("Edit", "Member", FormMethod.Post, new { @class = "form-horizontal" }))
+                {
+                    @Html.HiddenFor(model => model.Member)
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Assigned Route</label>
+                        <div class="col-sm-8">
+                            @Html.EditorFor(model => model.RouteDropDownList, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Pet Food:</label>
+                        <div class="col-sm-8">
+                            <label>
+                                @Html.EditorFor(model => model.PetFoodDropDownList, new { @class = "form-control" })
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Delayed Billing:</label>
+                        <div class="col-sm-8">
+                            <label>
+                                @Html.EditorFor(model => model.DelayedBillingDropDownList, new { @class = "form-control" })
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Pet Food Money:</label>
+                        <div class="col-sm-8">
+                            @Html.TextBoxFor(model => model.PetFoodMoney, new { @class = "form-control" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">Shipping Charge:</label>
+                        <div class="col-sm-8 checkbox">
+                            <label>
+                                @Html.CheckBoxFor(model => model.ShippingCharge)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="btn-group pull-right route-button-group">
+                        <button type="submit" class="btn btn-success">Save Changes</button>
+                    </div>
+                }
+            </div>
+        </div>
+        @Html.Partial("_DetailsPartial", Model)
+        
+    </div>
+</div>

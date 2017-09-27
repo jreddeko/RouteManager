@@ -1,15 +1,17 @@
 ﻿@model RouteManagement.ViewModels.HomeViewModel
 @{
-    var serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
-    serializer.MaxJsonLength = Int32.MaxValue;
-    var jsonModel = serializer.Serialize(Model);
+    var jsonModel = Html.Raw(Json.Encode(Model));
+}
+@section vueHomePage{    
+<script src="https://unpkg.com/vue"></script>
 }
 <script>
     var model = @Html.Raw(jsonModel);
     window.preLoadeddata = model;
 </script>
-<div class="row" id="app">
-    <div class="col-xs-3">
+<div class="row" id="app" v-cloak>
+    <div class="col-xs-12 col-sm-3">
+        @* -- ROUTE LIST -- *@
         <div class="panel panel-default">
             <div class="panel-heading paper-font-subhead">
                 Route List
@@ -17,86 +19,77 @@
             <div class="list-group p1">
                 <a href="#"
                    v-for="route in routes"
+                   v-bind:class="{ active:isActive(route.RouteID) }"
                    key="route.RouteID"
                    class="list-group-item list-group-item-action"
-                   v-on:click="displayRouteInfo(item)">
-                    Route: {{route.RouteID}}
+                   v-on:click="displayRouteInfo(route)">
+                        {{route.Description}}: #{{route.RouteNumber}}
                 </a>
             </div>
         </div>
     </div>
-    <div class="col-xs-9">
+    <div class="col-xs-12 col-sm-9">        
+        @* -- ROUTE DESCRIPTION -- *@
         <div class="panel panel-default">
             <div class="panel-heading paper-font-subhead">
-                <span>Route #{{ selectedRoute.RouteID }}</span>
+                <span>{{ routeChanged.Description }}</span>
             </div>
             <div class="p2">
+                <div class="text-center">
+                    <a class="btn btn-default btn-sm" href="@Url.Action("Index", "Home", new { date = Model.Calendar.PreviousWeek() })">
+                        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                        Prev Week
+                    </a>
+                    <a class="btn btn-default btn-sm" href="@Url.Action("Index", "Home", new { date = Model.Calendar.NextWeek() })">
+                        Next Week
+                        <i class="fa fa-arrow-right" aria-hidden="true"></i>
+                    </a>
+                </div>
                 <form v-on:submit.prevent="onSubmit" id="route-info-form" method="post">
-                    <div v-for="routeSite in selectedRoute.RouteSites" class="site-info">
+                    <div v-for="routeSite in routeChanged.RouteSites" class="site-info">
                         <table class="paper-font-body1">
                             <thead>
                                 <tr>
                                     <th>{{ routeSite.Site.Name }}</th>
-                                    <th v-for="day in routeSite.SiteOrderTypes[0].Days">
-                                        <span class="day">{{ day.GetDay }}</span><span class="long">{{ day.GetDayName }}</span>
+                                    <th v-for="day in calendar.Week">
+                                        <span class="day">{{ day.Day }}</span><span class="long">{{ day.Name }}</span>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr v-for="siteOrderType in routeSite.SiteOrderTypes">
                                     <td class="order-type">{{ siteOrderType.OrderType.Name }}</td>
-                                    <td v-for="day in siteOrderType.Days">
-                                        <delivery-info id="show-modal"
-                                                       v-bind:day="day"
-                                                       v-bind:delivery="day.HasDelivery"
-                                                       v-on:change="delivery => {day.HasDelivery = delivery }">
-                                        </delivery-info>
-                                        <daysinc-info v-model="day.IncrementByDays">
-                                        </daysinc-info>
-                                        <cutoff-info v-model="day.CutOffString"></cutoff-info>
+                                    <td v-for="day in calendar.Week" v-bind:class="{ exception: isException(day, siteOrderType) }">
+                                            <delivery-info id="show-modal"
+                                                           v-bind:delivery="getDeliveryDate(day, siteOrderType).HasDelivery"
+                                                           v-on:change="delivery => {getDeliveryDate(day, siteOrderType).HasDelivery = delivery }">
+                                            </delivery-info>
+                                            <daysinc-info v-if="getDeliveryDate(day, siteOrderType).HasDelivery"
+                                                          v-model="getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays">
+                                            </daysinc-info>
+                                            <cutoff-info v-if="getDeliveryDate(day, siteOrderType).HasDelivery && getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays === 0"
+                                                         v-model="getDeliveryDate(day, siteOrderType).CutOffString"></cutoff-info>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="btn-group" data-toggle="buttons">
-                        <button type="submit" class="btn btn-success">Save Changes</button>
+                    <div class="btn-group pull-right route-button-group" data-toggle="buttons">
+                        <button type="submit" class="btn btn-success" v-on:click="onSubmit(routeChanged)">Save Changes</button>
                     </div>
                 </form>
             </div>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading paper-font-subhead">
-                <span>Clinic's Routes</span>
+                <span>{{ routeChanged.Description }} Members</span>
             </div>
             <div class="list-group p3">
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
-                <a href="#" class="list-group-item list-group-item-action">1234213</a>
+                <a v-for="clinicSettings in routeChanged.ClinicSettings" 
+                   v-bind:href="'@Url.Action("Edit","Member")/' + clinicSettings.CustomerNumber" 
+                   class="list-group-item list-group-item-action"> {{ clinicSettings.CustomerNumber }}</a>
             </div>
         </div>
     </div>
 </div>
-@Html.Partial("Modal")
-<script src="/Templates/index.js"></script>
+@Html.Partial("VueTemplates")

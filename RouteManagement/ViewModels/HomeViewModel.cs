@@ -1,19 +1,21 @@
-﻿using RouteManagement.DB.Framework;
-using RouteManagement.Models.RouteManagement;
+﻿using RouteManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Wddc.Resources.DB.Routing;
 
 namespace RouteManagement.ViewModels
 {
     public class HomeViewModel
     {
-        public HomeViewModel(IRoute[] routes)
+        public HomeViewModel(Route[] routes, Calendar calendar)
         {
             this.Routes = routes;
+            this.Calendar = calendar;
         }
 
-        public IRoute[] Routes { get; private set; }
+        public Calendar Calendar { get; private set; }
+        public Route[] Routes { get; private set; }
     }
 }
