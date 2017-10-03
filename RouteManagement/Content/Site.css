@@ -1,6 +1,27 @@
 ﻿
+/* Always set the map height explicitly to define the size of the div
+    * element that contains the map. */
+#map {
+    height: 100%;
+}
+/* Optional: Makes the sample page fill the window. */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 [v-cloak] {
     display: none;
+}
+.superscript {
+  float:left;
+  max-width:5%;
+  position: relative; 
+  top: 0;
+  left: 20px;
+  font-size: 100%;
+  margin-top:0;
+  padding-top:0;
 }
 
 .route-button-group {

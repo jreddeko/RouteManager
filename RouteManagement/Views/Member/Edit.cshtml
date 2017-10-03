@@ -1,7 +1,7 @@
 ﻿@model RouteManagement.ViewModels.MemberViewModels.EditViewModel
 
 @{
-    ViewBag.Title = String.Format("Edit ~ #{0}: {1}", Model.ID,  Model.Member.Information.Name);
+    ViewBag.Title = String.Format("Edit ~ #{0}: {1}", Model.MemberNumber,  Model.Member.Information.Name);
 }
 
 <div class="panel panel-default">
@@ -17,6 +17,8 @@
                 @using (Html.BeginForm("Edit", "Member", FormMethod.Post, new { @class = "form-horizontal" }))
                 {
                     @Html.HiddenFor(model => model.Member)
+                    @Html.HiddenFor(model => model.MemberNumber)
+                    @Html.HiddenFor(model => model.MemberSettingID)
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Assigned Route</label>

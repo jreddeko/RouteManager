@@ -1,7 +1,7 @@
 ﻿using RouteManagement.ViewModels.RouteViewModels;
 using System;
 using System.Web.Mvc;
-using Wddc.Resources.DB.Routing;
+using Wddc.Services.Routes;
 
 namespace RouteManagement.Controllers
 {

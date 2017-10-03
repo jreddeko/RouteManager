@@ -1,5 +1,4 @@
-﻿using Wddc.Resources.Entities;
-
+﻿
 namespace RouteManagement.ViewModels.MemberViewModels
 {
     public class AddViewModel

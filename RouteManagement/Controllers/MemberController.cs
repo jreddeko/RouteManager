@@ -5,13 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Wddc.Resources.DB;
-using Wddc.Resources.DB.AscTrac;
-using Wddc.Resources.DB.GreatPlains;
-using Wddc.Resources.Entities;
 using PagedList;
-using Wddc.Resources.DB.Routing;
 using RouteManagement.ViewModels;
+using Wddc.Data;
+using RouteManagement.Exceptions;
+using Wddc.Core.Entities.Members;
 
 namespace RouteManagement.Controllers
 {
@@ -26,7 +24,7 @@ namespace RouteManagement.Controllers
                 state = SetupState.Any;
             else
                 state = (SetupState)Enum.Parse(typeof(SetupState), SetupStatesDropDownList.SelectedValue);
-            using (var apiClient = new Wddc.Resources.ApiMemberClient(System.Configuration.ConfigurationManager.AppSettings["WebAPIBaseUrl"]))
+            using (var apiClient = new ApiMemberClient(System.Configuration.ConfigurationManager.AppSettings["WebAPIBaseUrl"]))
             {
                 var listing = await apiClient.GetMembersAsync(25, search, startsAt, state);
                 var model = new IndexViewModel()
@@ -63,7 +61,7 @@ namespace RouteManagement.Controllers
                     model.ShippingCharge,
                     Int32.Parse(model.DelayedBillingDropDownList.SelectedValue)
                 );
-                return RedirectToAction("Edit", new { id = result.CustomerNumber });
+                return RedirectToAction("Edit", new { id = result.MemberNumber });
             }
             return View(model);
         }
@@ -71,31 +69,38 @@ namespace RouteManagement.Controllers
         [HttpGet]
         public async Task<ActionResult> Add(string id)
         {
-            using (var apiClient = new Wddc.Resources.ApiMemberClient(System.Configuration.ConfigurationManager.AppSettings["WebAPIBaseUrl"]))
+            using (var apiClient = new ApiMemberClient(System.Configuration.ConfigurationManager.AppSettings["WebAPIBaseUrl"]))
             {
                 var member = await apiClient.GetMemberAsync(id);
+                if (member == null)
+                    throw new ArgumentException(String.Format("Member: '{0}' not found.", id));
+                if (member.SetupState == SetupState.Complete)
+                    throw new MemberRouteException(String.Format("Member: '{0}' has already been added to a route.", id));
+                if (member.SetupState == SetupState.PendingShippingSetup)
+                    throw new MemberRouteException(String.Format("Member: '{0}' required shipping setup.", id));
+
                 var model = new ViewModels.MemberViewModels.AddViewModel()
                 {
                     DelayedBillingDropDownList = new ViewModels.DropDownListViewModel()
                     {
-                        Items = this.Service.GetDelayedBillingOptions()
+                        Items = this.Service.GetMemberSettingsOptions()
                             .Select(db => new SelectListItem()
                             {
                                 Text = db.Name,
-                                Value = db.DelayedBillingID.ToString(),
+                                Value = db.MemberSettingOptionID.ToString(),
                             }),
-                        SelectedValue = null,
+                        SelectedValue = "1",
                     },
 
                     PetFoodDropDownList = new ViewModels.DropDownListViewModel()
                     {
-                        Items = this.Service.GetPetFoodOptions()
+                        Items = this.Service.GetMemberSettingsOptions()
                             .Select(db => new SelectListItem()
                             {
                                 Text = db.Name,
-                                Value = db.PetFoodID.ToString(),
+                                Value = db.MemberSettingOptionID.ToString(),
                             }),
-                        SelectedValue = null,
+                        SelectedValue = "1",
                     },
                     RouteDropDownList = new ViewModels.DropDownListViewModel()
                     {
@@ -107,9 +112,9 @@ namespace RouteManagement.Controllers
                             }),
                         SelectedValue = null,
                     },
-                    MemberNumber = member.id,
+                    MemberNumber = member.Id,
                     MemberName = member.Information.Name,
-                    PetFoodMoney = 0,
+                    PetFoodMoney = 475.00m,
                     ShippingCharge = false,
                 };
                 return View(model);
@@ -119,32 +124,33 @@ namespace RouteManagement.Controllers
         [HttpGet]
         public async Task<ActionResult> Edit(string id)
         {
-            using (var apiClient = new Wddc.Resources.ApiMemberClient(System.Configuration.ConfigurationManager.AppSettings["WebAPIBaseUrl"]))
+            using (var apiClient = new ApiMemberClient(System.Configuration.ConfigurationManager.AppSettings["WebAPIBaseUrl"]))
             {
                 var member = await apiClient.GetMemberAsync(id);
-                var clinicSettings = this.Service.GetClinicSettings(id);
-                var petFoodOptions = this.Service.GetPetFoodOptions();
+                if (member == null)
+                    return HttpNotFound();
+                var memberSettings = this.Service.GetMemberSettings(id);
                 var assignedRoute = this.Service.GetAllRoutes()
-                    .SingleOrDefault(r => r.ClinicSettings.Any(cs => cs.CustomerNumber == member.id));
+                    .SingleOrDefault(r => r.MemberSettings.Any(cs => cs.MemberNumber == member.Id));
                 var delayedBillingDropDownList = new ViewModels.DropDownListViewModel()
                     {
-                        Items = this.Service.GetDelayedBillingOptions()
+                        Items = this.Service.GetMemberSettingsOptions()
                                 .Select(db => new SelectListItem()
                                 {
                                     Text = db.Name,
-                                    Value = db.DelayedBillingID.ToString(),
+                                    Value = db.MemberSettingOptionID.ToString(),
                                 }),
-                        SelectedValue = clinicSettings?.DelayedBillingID.ToString(),
+                        SelectedValue = memberSettings?.DelayedBillingID.ToString(),
                     };
                 var petFoodDropDownList = new ViewModels.DropDownListViewModel()
                 {
-                    Items = this.Service.GetPetFoodOptions()
+                    Items = this.Service.GetMemberSettingsOptions()
                             .Select(db => new SelectListItem()
                             {
                                 Text = db.Name,
-                                Value = db.PetFoodID.ToString(),
+                                Value = db.MemberSettingOptionID.ToString(),
                             }),
-                    SelectedValue = clinicSettings?.PetFoodID.ToString(),
+                    SelectedValue = memberSettings?.PetFoodID.ToString(),
                 };
                 var routeDropDownList = new ViewModels.DropDownListViewModel()
                 {
@@ -160,11 +166,11 @@ namespace RouteManagement.Controllers
                 {
                     DelayedBillingDropDownList = delayedBillingDropDownList,
                     PetFoodDropDownList = petFoodDropDownList,
-                    ID = clinicSettings.ClinicSettingsID,
+                    MemberSettingID = memberSettings.MemberSettingID,
                     RouteDropDownList = routeDropDownList,
-                    ShippingCharge = clinicSettings.ShippingCharge,
-                    PetFoodMoney = clinicSettings.PetFoodMoney,
-                    CustomerNumber = id,
+                    ShippingCharge = memberSettings.HasShippingCharge,
+                    PetFoodMoney = memberSettings.PetFoodMoney,
+                    MemberNumber = id,
                     Member = member,
                 };
 
@@ -176,13 +182,13 @@ namespace RouteManagement.Controllers
         [HttpPost]
         public ActionResult Edit(ViewModels.MemberViewModels.EditViewModel model)
         {
-            this.Service.UpdateMemberRoute(model.ID, Int32.Parse(model.RouteDropDownList.SelectedValue));
-            this.Service.UpdateMemberSettings(model.ID,
+            this.Service.UpdateMemberRoute(model.MemberSettingID, Int32.Parse(model.RouteDropDownList.SelectedValue));
+            this.Service.UpdateMemberSettings(model.MemberSettingID,
                 Int32.Parse(model.PetFoodDropDownList.SelectedValue),
                 model.PetFoodMoney,
                 model.ShippingCharge,
                 Int32.Parse(model.DelayedBillingDropDownList.SelectedValue));
-            return RedirectToAction("Edit", new { id = model.ID });
+            return RedirectToAction("Edit", new { id = model.MemberNumber });
         }
 
         public ActionResult DetailsPartial(Member member)

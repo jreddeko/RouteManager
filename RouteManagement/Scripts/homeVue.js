@@ -74,7 +74,7 @@
         },
         getDefaultDeliveryDate(day, siteOrderType) {
             return siteOrderType.DeliveryDateDefaults.filter(function (ele) {
-                return day.DayOfWorkWeek === ele.DayOfWeek;
+                return day.DayOfWorkWeek === ele.DayOfWeekID;
             })[0];
         },
         getDeliveryDate(day, siteOrderType) {

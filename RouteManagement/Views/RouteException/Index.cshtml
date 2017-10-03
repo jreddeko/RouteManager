@@ -1,0 +1,39 @@
+﻿@model RouteManagement.ViewModels.RouteExceptionViewModels.IndexViewModel
+@{
+    ViewBag.Title = "Route Exceptions";
+}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        @ViewBag.Title
+    </div>
+    <div class="panel-body">
+        <div class="list-group">
+            @foreach (var date in Model.ExceptionDates)
+            {
+                <div class="list-group-item">
+                    <div class="row">
+                        <div class="col-xs-1">
+                            <div>
+                                <strong>Date:</strong> @date.ToShortDateString()
+                            </div>
+                        </div>
+                        <div class="col-xs-4">
+                            <div class="dropdown">
+                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    <i class="fa fa-bars" aria-hidden="true"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                    <li>
+                                        <a href="@Url.Action("Delete", new { exceptionDate = @date })">
+                                            Delete
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

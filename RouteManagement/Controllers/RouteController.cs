@@ -24,7 +24,7 @@ namespace RouteManagement.Controllers
             {
                 this.Service.AddRoute(model.RouteNumber, model.Description, Int32.Parse(model.RouteDropDownList.SelectedValue));
             }
-            return View(model);
+            return RedirectToAction("Index", "Home");
         }
     }
 }

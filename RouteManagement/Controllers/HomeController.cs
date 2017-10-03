@@ -1,9 +1,9 @@
-﻿using Wddc.Resources.DB.Routing;
-using RouteManagement.Models;
+﻿using RouteManagement.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Wddc.Data;
 
 namespace RouteManagement.Controllers
 {
@@ -19,12 +19,15 @@ namespace RouteManagement.Controllers
                 routes.ToArray(),
                 calendar
             );
+            var f = viewModel.Routes.First().RouteSites.First().SiteOrderTypes.First().DeliveryDateDefaults.First();
             return View(viewModel);
         }
 
         [HttpPost]
         public ActionResult Index(Route obj)
         {
+            if (obj == null)
+                throw new ArgumentNullException("obj");
             Service.UpdateRoute(obj);
             var routes = Service.GetAllRoutes();
             return Json(new { routes = routes });

@@ -85,9 +85,9 @@
                 <span>{{ routeChanged.Description }} Members</span>
             </div>
             <div class="list-group p3">
-                <a v-for="clinicSettings in routeChanged.ClinicSettings" 
-                   v-bind:href="'@Url.Action("Edit","Member")/' + clinicSettings.CustomerNumber" 
-                   class="list-group-item list-group-item-action"> {{ clinicSettings.CustomerNumber }}</a>
+                <a v-for="memberSetting in routeChanged.MemberSettings" 
+                   v-bind:href="'@Url.Action("Edit","Member")/' + memberSetting.MemberNumber" 
+                   class="list-group-item list-group-item-action"> {{ memberSetting.MemberNumber }}</a>
             </div>
         </div>
     </div>

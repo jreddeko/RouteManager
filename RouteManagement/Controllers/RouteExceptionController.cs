@@ -4,15 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Wddc.Services.Routes;
 
 namespace RouteManagement.Controllers
 {
     public class RouteExceptionController : RouteManagementController
     {
+        private RouteExceptionService routeExceptionService = new RouteExceptionService();
         // GET: RouteException
         public ActionResult Index()
         {
-            return View();
+            var exceptions = routeExceptionService.GetAll();
+            var model = new ViewModels.RouteExceptionViewModels.IndexViewModel()
+            {
+                ExceptionDates = exceptions.Select(e => e.Date).Distinct()
+            };
+            return View(model);
         }
 
         [HttpGet]
@@ -36,18 +43,6 @@ namespace RouteManagement.Controllers
             return View(model);
         }
 
-        private IEnumerable<SelectListItem> _getAvailableOrderTypes()
-        {
-            var orderTypes = this.Service.GetOrderTypes();
-            return orderTypes
-                .Select(r => new SelectListItem
-                {
-                    Text = r.Name,
-                    Value = r.OrderTypeID.ToString(),
-                    Selected = true
-                });
-        }
-
         [HttpPost]
         public ActionResult Add(AddRouteExceptionViewModel model)
         {
@@ -64,6 +59,24 @@ namespace RouteManagement.Controllers
                 return RedirectToAction("Index", "Home");
             }
             return View();
+        }
+
+        public ActionResult Delete(DateTime exceptionDate)
+        {
+            routeExceptionService.Delete(exceptionDate);
+            return RedirectToAction("Index");
+        }
+
+        private IEnumerable<SelectListItem> _getAvailableOrderTypes()
+        {
+            var orderTypes = this.Service.GetOrderTypes();
+            return orderTypes
+                .Select(r => new SelectListItem
+                {
+                    Text = r.Name,
+                    Value = r.OrderTypeID.ToString(),
+                    Selected = true
+                });
         }
 
         private IEnumerable<SelectListItem> _getAvailableRoutes()

@@ -1,0 +1,267 @@
+﻿@model IEnumerable<RouteManagement.ViewModels.MapViewModels.IndexViewModel>
+@{
+    Layout = null;
+}
+
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <style>
+        /* Always set the map height explicitly to define the size of the div
+            * element that contains the map. */
+        #map {
+            height: 80%;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #legend {
+            font-family: Arial, sans-serif;
+            background: #fff;
+            padding: 10px;
+            margin: 10px;
+            border: 3px solid #000;
+            width: 100px;
+        }
+
+            #legend h3 {
+                margin-top: 0;
+            }
+
+            #legend img {
+                vertical-align: middle;
+            }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Photo Radar</a>
+            </div>
+        </div><!-- /.container-fluid -->
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <form>
+                    <div class="input-group">
+                        <input id="map-search" type="text" class="form-control" placeholder="Enter location...">
+                        <span class="input-group-btn">
+                            <button id="map-search-button" class="btn btn-secondary" type="button">Search</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div id="map"></div>
+                @*<div id="legend"><h3>Legend</h3></div>*@
+            </div>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted"></p>
+        </div>
+    </footer>
+
+</body>
+</html>
+
+<script> var locations = @Html.Raw(Json.Encode(Model));</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBdOr1wN1QEEeSle4Bsi1MTZhkzjjYijsU&libraries=places&callback=initMap"></script>
+<script type="text/javascript" src="~/Scripts/markerclusterer.js"></script>
+<script async defer ssrc="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script> 
+    var markerColors = ['F44336','E91E63', '9C27B0','673AB7', '3F51B5','2196F3', '03A9F4','00BCD4', '009688','4CAF50', '8BC34A','CDDC39', 'FFEB3B','FFC107', 'FF9800', 'FF5722', '795548', '9E9E9E'];   
+
+    // Note: This example requires that you consent to location sharing when
+    // prompted by your browser. If you see the error "The Geolocation service
+    // failed.", it means you probably did not give permission for the browser to
+    // locate you.
+    var map, infoWindow;
+    function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 53.544, lng: -113.491 },
+            zoom: 14,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+        });
+
+        setMarkers(map);
+        // Try HTML5 geolocation.
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var pos = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+                map.setCenter(pos);
+            }, function () {
+                handleLocationError(true, infoWindow, map.getCenter());
+            });
+        } else {
+            // Browser doesn't support Geolocation
+            handleLocationError(false, infoWindow, map.getCenter());
+        }
+
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('map-search');
+        var searchBox = new google.maps.places.SearchBox(input);
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed', function () {
+            searchBox.setBounds(map.getBounds());
+        });
+
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed', function () {
+            var places = searchBox.getPlaces();
+
+            if (places.length == 0) {
+                return;
+            }
+
+            // For each place, get the icon, name and location.
+            var bounds = new google.maps.LatLngBounds();
+            places.forEach(function (place) {
+                if (!place.geometry) {
+                    console.log("Returned place contains no geometry");
+                    return;
+                }
+
+                if (place.geometry.viewport) {
+                    // Only geocodes have viewport.
+                    bounds.union(place.geometry.viewport);
+                } else {
+                    bounds.extend(place.geometry.location);
+                }
+            });
+            map.fitBounds(bounds);
+        });
+    }
+
+    // Trigger search on button click
+    document.getElementById('map-search-button').onclick = function () {
+
+        var input = document.getElementById('map-search');
+
+        google.maps.event.trigger(input, 'focus')
+        google.maps.event.trigger(input, 'keydown', {
+            keyCode: 13
+        });
+    };
+
+    function setMarkers(map) {
+
+        var groupBy = function(xs, key) {
+            return xs.reduce(function(rv, x) {
+                (rv[x[key]] = rv[x[key]] || []).push(x);
+                return rv;
+            }, {});
+        };
+        // group by route
+        var routeGroups = groupBy(locations, 'Route');
+        var markerCluster = new MarkerClusterer(map, null, {
+            icon: '/images/m',
+            maxZoom: 9,
+        });
+
+        var markerColorIndex = 0;
+        for (var index in routeGroups)
+        {
+
+            var directionsDisplay = new google.maps.DirectionsRenderer();
+            directionsDisplay.setMap(map);
+
+            var request = {
+                travelMode: google.maps.TravelMode.DRIVING
+            };
+            //var pinColor = markerColors[markerColorIndex];
+            //var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + pinColor,
+            //    new google.maps.Size(21, 34),
+            //    new google.maps.Point(0,0),
+            //    new google.maps.Point(10, 34));
+            //var pinShadow = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_shadow",
+            //    new google.maps.Size(40, 37),
+            //    new google.maps.Point(0, 0),
+            //    new google.maps.Point(12, 35));
+
+            var directionsService = new google.maps.DirectionsService();
+            var markers = routeGroups[index].map(function (location, i) {
+                var contentString = '<div id="content">'+
+                    '<div id="siteNotice">'+
+                    '</div>'+
+                    '<h3 id="firstHeading" class="firstHeading">' + location.Name + '</h3>'+
+                    '<div id="bodyContent">'+
+                    '<p><a href="members/index/' + location.MemberNumber + '">'+
+                     location.MemberNumber + 
+                    '</div>'+
+                    '</div>';
+                var markerInfoWindow = new google.maps.InfoWindow({
+                    content: contentString
+                });
+                var z = {
+                    lat: parseFloat(location.lat),
+                    lng: parseFloat(location.lng),
+                };
+
+
+                var marker = new google.maps.Marker({
+                    position: z,
+                    animation: google.maps.Animation.DROP,
+                });
+                if (i == 0)
+                    request.origin = marker.getPosition();
+                else if (i == routeGroups[index].length - 1)
+                    request.destination = marker.getPosition();
+                else {
+                    if (!request.waypoints)
+                        request.waypoints = [];
+                    request.waypoints.push({
+                        location: marker.getPosition(),
+                        stopover: true
+                    });
+                }
+
+                marker.addListener('click', function() {
+                    markerInfoWindow.open(map, marker);
+                });
+                //directionsService.route(request, function(result, status) {
+                //    if (status == google.maps.DirectionsStatus.OK) {
+                //        directionsDisplay.setDirections(result);
+                //    }
+                //});
+                return marker;
+            });
+            markerCluster.addMarkers(markers, false);
+            //var legend = document.getElementById('legend');
+            //var div = document.createElement('div');
+            //div.className = "col-xs-3";
+            //div.innerHTML =  '<img src="' + pinImage.url + '"> ' + index;;
+            //legend.appendChild(div);
+            //markerColorIndex++;
+        }
+        //map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(legend);
+
+    }
+    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ?
+                              'Error: The Geolocation service failed.' :
+                              'Error: Your browser doesn\'t support geolocation.');
+        infoWindow.open(map);
+    }
+
+</script>

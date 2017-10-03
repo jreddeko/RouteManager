@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Wddc.Resources.DB.AscTrac;
-using Wddc.Resources.DB.GreatPlains;
-using Wddc.Resources.Entities;
 using PagedList;
+using Wddc.Core.Entities.Members;
 
 namespace RouteManagement.ViewModels.MemberViewModels
 {

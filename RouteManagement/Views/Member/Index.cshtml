@@ -28,15 +28,15 @@
                 <div class="list-group">
                     @for (int i = 0; i < Model.Members.Count(); i++)
                     {
-                        if (Model.Members[i].SetupState == Wddc.Resources.Entities.SetupState.Complete)
+                        if (Model.Members[i].SetupState == Wddc.Core.Entities.Members.SetupState.Complete)
                         {
                             @Html.Partial("_MemberCompleteListItem", Model.Members[i])
                         }
-                        else if (Model.Members[i].SetupState == Wddc.Resources.Entities.SetupState.PendingRoutingSetup)
+                        else if (Model.Members[i].SetupState == Wddc.Core.Entities.Members.SetupState.PendingRoutingSetup)
                         {
                             @Html.Partial("_MemberPendingRoutingListItem", Model.Members[i])
                         }
-                        else if (Model.Members[i].SetupState == Wddc.Resources.Entities.SetupState.PendingShippingSetup)
+                        else if (Model.Members[i].SetupState == Wddc.Core.Entities.Members.SetupState.PendingShippingSetup)
                         {
                             @Html.Partial("_MemberPendingShippingListItem", Model.Members[i])
                         }

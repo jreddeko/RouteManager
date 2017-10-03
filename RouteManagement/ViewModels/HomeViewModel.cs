@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Wddc.Resources.DB.Routing;
+using Wddc.Data;
 
 namespace RouteManagement.ViewModels
 {

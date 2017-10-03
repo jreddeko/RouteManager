@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Wddc.Resources.DB.Routing;
+using Wddc.Services.Routes;
 
 namespace RouteManagement.ViewModels.RouteViewModels
 {

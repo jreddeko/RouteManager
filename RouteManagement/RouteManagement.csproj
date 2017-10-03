@@ -232,6 +232,15 @@
     <Reference Include="Wddc">
       <HintPath>..\lib\Wddc.dll</HintPath>
     </Reference>
+    <Reference Include="Wddc.Core">
+      <HintPath>..\..\Wddc\Wddc.Core\bin\Debug\Wddc.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Wddc.Data">
+      <HintPath>..\..\Wddc\Wddc.Data\bin\Debug\Wddc.Data.dll</HintPath>
+    </Reference>
+    <Reference Include="Wddc.Services">
+      <HintPath>..\..\Wddc\Wddc.Services\bin\Debug\Wddc.Services.dll</HintPath>
+    </Reference>
     <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
       <Private>True</Private>
@@ -273,6 +282,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\MapController.cs" />
     <Compile Include="Controllers\MemberController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
@@ -280,6 +290,7 @@
     <Compile Include="Controllers\RouteController.cs" />
     <Compile Include="Controllers\RouteManagementController.cs" />
     <Compile Include="Controllers\RouteExceptionController.cs" />
+    <Compile Include="Exceptions\MemberRouteException.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -297,9 +308,11 @@
     <Compile Include="ViewModels\DropDownListViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\AddRouteExceptionViewModel.cs" />
+    <Compile Include="ViewModels\MapViewModels\IndexViewModel.cs" />
     <Compile Include="ViewModels\MemberViewModels\AddViewModel.cs" />
     <Compile Include="ViewModels\MemberViewModels\EditViewModel.cs" />
     <Compile Include="ViewModels\MemberViewModels\IndexViewModel.cs" />
+    <Compile Include="ViewModels\RouteExceptionViewModels\IndexViewModel.cs" />
     <Compile Include="ViewModels\RouteViewModels\AddRouteViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -477,6 +490,8 @@
     <Content Include="Scripts\knockout-3.4.2.js" />
     <Content Include="Scripts\knockout.validation.js" />
     <Content Include="Scripts\knockout.validation.min.js" />
+    <Content Include="Scripts\map\map.js" />
+    <Content Include="Scripts\markerclusterer.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\moment-with-locales.js" />
     <Content Include="Scripts\moment-with-locales.min.js" />
@@ -547,9 +562,12 @@
     <Content Include="Views\Member\_MemberPendingRoutingListItem.cshtml" />
     <Content Include="Views\Member\_MemberPendingShippingListItem.cshtml" />
     <Content Include="Views\Route\Add.cshtml" />
+    <Content Include="Views\Map\Index.cshtml" />
+    <Content Include="Views\RouteException\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -559,12 +577,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Wddc\Wddc.Resources\Wddc.Resources.csproj">
-      <Project>{a409a5ac-d29e-4282-9667-7a2f6f372f35}</Project>
-      <Name>Wddc.Resources</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,9 +1,9 @@
-﻿@model Wddc.Resources.Entities.Member
+﻿@model Wddc.Core.Entities.Members.Member
 
 <div class="list-group-item list-group-item-action">
     <div class="row">
         <div class="col-xs-4">
-            <div>@Html.DisplayFor(model => model.id): @Html.DisplayFor(model => model.Information.Name)</div>
+            <div>@Html.DisplayFor(model => model.Id): @Html.DisplayFor(model => model.Information.Name)</div>
         </div>
         <div class="col-xs-2">
             <div>@Html.DisplayFor(model => model.Information.City), @Html.DisplayFor(model => model.Information.State)</div>

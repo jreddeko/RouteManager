@@ -1,10 +1,11 @@
-﻿@model Wddc.Resources.Entities.Member
+﻿@model Wddc.Core.Entities.Members.Member
 
-<a href="@Url.Action("Edit", new { id = Model.id })"
+<a href="@Url.Action("Edit", new { id = Model.Id })"
    class="list-group-item list-group-item-action">
     <div class="row">
         <div class="col-xs-4">
-            <div>@Html.DisplayFor(model => model.id): @Html.DisplayFor(model => model.Information.Name)</div>
+            <div><strong>@Html.DisplayFor(model => model.Id): @Html.DisplayFor(model => model.Information.Name)</strong></div>
+            <div>@Html.DisplayFor(model => model.Route.RouteNumber): @Html.DisplayFor(model => model.Route.Description)</div>
         </div>
         <div class="col-xs-2">
             <div>@Html.DisplayFor(model => model.Information.City), @Html.DisplayFor(model => model.Information.State)</div>
@@ -16,45 +17,50 @@
             }
         </div>
         <div class="col-xs-3">
-            <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="Delayed Billing">
-                <i class="fa fa-money fa-stack-1x" aria-hidden="true"></i>
+            <span class="fa-stack fa-lg">
                 @if (@Model.Route.DelayedBilling == "No")
                 {
-                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                    <i class="fa fa-money fa-stack-1x" data-toggle="tooltip" data-placement="top" title="No Delayed Billing"></i>
+                    <i class="fa fa-ban fa-stack-2x text-danger" data-toggle="tooltip" data-placement="top" title="No Delayed Billing"></i>
                 }
                 else if (@Model.Route.DelayedBilling == "Decide on Order")
                 {
-                    <i class="fa fa-asterisk fa-stack-2x text-warning" aria-hidden="true"></i>
+                    <i class="fa fa-money fa-stack-1x" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Decide Delayed Billing on Order"></i>
+                    <i class="fa fa-asterisk superscript text-warning" data-toggle="tooltip" data-placement="top" title="Decide Delayed Billing on Order"></i>
                 }
                 else
                 {
-                    <i class="fa fa-square-o fa-stack-2x text-success"></i>
+                    <i class="fa fa-money fa-stack-1x" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Has Delayed Billing"></i>
+                    <i class="fa fa-square-o fa-stack-2x text-success" data-toggle="tooltip" data-placement="top" title="Has Delayed Billing"></i>
                 }
             </span>
-            <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="Pet Food">
-                <i class="fa fa-cutlery fa-stack-1x" aria-hidden="true"></i>
+            <span class="fa-stack fa-lg">
                 @if (@Model.Route.PetFood == "No")
                 {
-                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                    <i class="fa fa-cutlery fa-stack-1x" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="No Pet Food"></i>
+                    <i class="fa fa-ban fa-stack-2x text-warning" data-toggle="tooltip" data-placement="top" title="No Pet Food"></i>
                 }
                 else if (@Model.Route.PetFood == "Decide on Order")
                 {
-                    <i class="fa fa-asterisk fa-stack-2x text-warning" aria-hidden="true"></i>
+                    <i class="fa fa-cutlery fa-stack-1x" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Decide Pet Food on Order"></i>
+                    <i class="fa fa-asterisk superscript text-warning" data-toggle="tooltip" data-placement="top" title="Decide Pet Food on Order"></i>
                 }
                 else
                 {
-                    <i class="fa fa-square-o fa-stack-2x text-success"></i>
+                    <i class="fa fa-cutlery fa-stack-1x" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Has Pet Food"></i>
+                    <i class="fa fa-square-o fa-stack-2x text-success" data-toggle="tooltip" data-placement="top" title="Has Pet Food"></i>
                 }
             </span>
-            <span class="fa-stack fa-lg" data-toggle="tooltip" data-placement="top" title="Shipping Charge">
-                <i class="fa fa-usd fa-stack-1x"></i>
+            <span class="fa-stack fa-lg">
                 @if (!@Model.Route.ShippingCharge)
                 {
-                    <i class="fa fa-ban fa-stack-2x text-danger"></i>
+                    <i class="fa fa-usd fa-stack-1x" data-toggle="tooltip" data-placement="top" title="No Shipping Charge"></i>
+                    <i class="fa fa-ban fa-stack-2x text-danger" data-toggle="tooltip" data-placement="top" title="No Shipping Charge"></i>
                 }
                 else
                 {
-                    <i class="fa fa-square-o fa-stack-2x text-success"></i>
+                    <i class="fa fa-usd fa-stack-1x" data-toggle="tooltip" data-placement="top" title="Has Shipping Charge"></i>
+                    <i class="fa fa-square-o fa-stack-2x text-success" data-toggle="tooltip" data-placement="top" title="Has Shipping Charge"></i>
                 }
             </span>
         </div>
