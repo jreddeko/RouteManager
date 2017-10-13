@@ -10,6 +10,9 @@ using RouteManagement.Models;
 
 namespace RouteManagement.Controllers
 {
+    /// <summary>
+    /// Auto generated class for managing logins, not really used.
+    /// </summary>
     [Authorize]
     public class ManageController : Controller
     {

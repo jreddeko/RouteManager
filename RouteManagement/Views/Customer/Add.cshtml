@@ -1,7 +1,7 @@
-﻿@model RouteManagement.ViewModels.MemberViewModels.AddViewModel
+﻿@model RouteManagement.ViewModels.CustomerViewModels.AddViewModel
 
 @{
-    ViewBag.Title = String.Format("Add Member ~ #{0}: {1}", Model.MemberNumber, Model.MemberName);
+    ViewBag.Title = String.Format("Add Member ~ #{0}: {1}", Model.CustomerId, Model.CustomerName);
 }
 
 <div class="panel panel-default">
@@ -14,9 +14,9 @@
                 Delivery Settings:
             </div>
             <div class="panel-body">
-                @using (Html.BeginForm("Add", "Member", FormMethod.Post, new { @class = "form-horizontal" }))
+                @using (Html.BeginForm("Add", "Customer", FormMethod.Post, new { @class = "form-horizontal" }))
                 {
-                    @Html.HiddenFor(model => model.MemberNumber)
+                    @Html.HiddenFor(model => model.CustomerId)
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Assigned Route</label>

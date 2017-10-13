@@ -1,0 +1,130 @@
+﻿@model RouteManagement.ViewModels.CustomerViewModels.EditViewModel
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Carriers:
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal">
+            @foreach (var carrier in Model.Customer.Carrier)
+            {
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">@carrier.CARRIER_ID:</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" disabled type="text" value="@carrier.SHIPVIA">
+                    </div>
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Information:
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.CustomerName)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.CustomerName)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.CustomerClass)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.CustomerClass)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.ContactPerson)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.ContactPerson)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.AddressCode)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.AddressCode)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.Address1)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.Address1)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.Address2)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.Address2)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.City)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.City)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.State)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.State)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.Country)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.Country)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.Zip)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.Zip)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.Phone1)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.Phone1)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.Phone2)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.Phone2)">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.Customer.Information.Fax)</label>
+                <div class="col-sm-8">
+                    <input class="form-control" disabled type="text" value="@Html.DisplayFor(model => model.Customer.Information.Fax)">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        Notes:
+    </div>
+    <div class="panel-body">
+        <form class="form-horizontal">
+            @foreach (var note in Model.Customer.Notes)
+            {
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">@note.SequenceNumber</label>
+                    <div class="col-sm-8">
+                        <input class="form-control" disabled type="text" value="@note.Note">
+                    </div>
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+

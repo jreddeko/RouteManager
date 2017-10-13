@@ -9,8 +9,10 @@
     var model = @Html.Raw(jsonModel);
     window.preLoadeddata = model;
 </script>
+
 <div class="row" id="app" v-cloak>
     <div class="col-xs-12 col-sm-3">
+
         @* -- ROUTE LIST -- *@
         <div class="panel panel-default">
             <div class="panel-heading paper-font-subhead">
@@ -28,7 +30,8 @@
             </div>
         </div>
     </div>
-    <div class="col-xs-12 col-sm-9">        
+    <div class="col-xs-12 col-sm-9">
+              
         @* -- ROUTE DESCRIPTION -- *@
         <div class="panel panel-default">
             <div class="panel-heading paper-font-subhead">
@@ -65,7 +68,9 @@
                                                            v-on:change="delivery => {getDeliveryDate(day, siteOrderType).HasDelivery = delivery }">
                                             </delivery-info>
                                             <daysinc-info v-if="getDeliveryDate(day, siteOrderType).HasDelivery"
-                                                          v-model="getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays">
+                                                          v-bind:inc="getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays"
+                                                          v-on:change="inc => {getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays = inc }"
+                                                          onmouseover="" style="cursor: pointer;">
                                             </daysinc-info>
                                             <cutoff-info v-if="getDeliveryDate(day, siteOrderType).HasDelivery && getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays === 0"
                                                          v-model="getDeliveryDate(day, siteOrderType).CutOffString"></cutoff-info>
@@ -82,12 +87,12 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading paper-font-subhead">
-                <span>{{ routeChanged.Description }} Members</span>
+                <span>{{ routeChanged.Description }} Customers</span>
             </div>
             <div class="list-group p3">
-                <a v-for="memberSetting in routeChanged.MemberSettings" 
-                   v-bind:href="'@Url.Action("Edit","Member")/' + memberSetting.MemberNumber" 
-                   class="list-group-item list-group-item-action"> {{ memberSetting.MemberNumber }}</a>
+                <a v-for="customerSetting in routeChanged.CustomerSettings" 
+                   v-bind:href="'@Url.Action("Edit","Customer")/' + customerSetting.CustomerId" 
+                   class="list-group-item list-group-item-action"> {{ customerSetting.CustomerId }} - {{ customerSetting.CustomerName }}</a>
             </div>
         </div>
     </div>

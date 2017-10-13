@@ -1,11 +1,16 @@
-﻿@model Wddc.Core.Entities.Members.Member
-
-<a href="@Url.Action("Edit", new { id = Model.Id })"
-   class="list-group-item list-group-item-action">
+﻿@model Wddc.Core.Entities.EdiOrdering.Customers.Customer
+<div class="list-group-item list-group-item-action">
     <div class="row">
         <div class="col-xs-4">
-            <div><strong>@Html.DisplayFor(model => model.Id): @Html.DisplayFor(model => model.Information.Name)</strong></div>
-            <div>@Html.DisplayFor(model => model.Route.RouteNumber): @Html.DisplayFor(model => model.Route.Description)</div>
+
+            <a href="@Url.Action("Edit", new { id = Model.Id })">
+                <div><strong>@Html.DisplayFor(model => model.Id): @Html.DisplayFor(model => model.Information.CustomerName)</strong></div>
+            </a>
+            <div>
+                <a href="@Url.Action("Index", "Home", new { id = Model.Route.RouteID })">
+                    @Html.DisplayFor(model => model.Route.RouteNumber): @Html.DisplayFor(model => model.Route.Description)
+                </a>
+            </div>
         </div>
         <div class="col-xs-2">
             <div>@Html.DisplayFor(model => model.Information.City), @Html.DisplayFor(model => model.Information.State)</div>
@@ -52,7 +57,7 @@
                 }
             </span>
             <span class="fa-stack fa-lg">
-                @if (!@Model.Route.ShippingCharge)
+                @if (!@Model.Route.HasShippingCharge)
                 {
                     <i class="fa fa-usd fa-stack-1x" data-toggle="tooltip" data-placement="top" title="No Shipping Charge"></i>
                     <i class="fa fa-ban fa-stack-2x text-danger" data-toggle="tooltip" data-placement="top" title="No Shipping Charge"></i>
@@ -65,5 +70,4 @@
             </span>
         </div>
     </div>
-</a>
-
+</div>

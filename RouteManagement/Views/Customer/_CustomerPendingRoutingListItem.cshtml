@@ -1,11 +1,13 @@
-﻿@model Wddc.Core.Entities.Members.Member
-
-<a href="@Url.Action("Add", new { id = Model.Id })"
+﻿@model Wddc.Core.Entities.EdiOrdering.Customers.Customer
+<div
    class="list-group-item list-group-item-action">
     <div class="row">
 
         <div class="col-xs-4">
-            <div>@Html.DisplayFor(model => model.Id): @Html.DisplayFor(model => model.Information.Name)</div>
+
+            <a href="@Url.Action("Add", new { id = Model.Id })">
+                <div>@Html.DisplayFor(model => model.Id): @Html.DisplayFor(model => model.Information.CustomerName)</div>
+            </a>
         </div>
         <div class="col-xs-2">
             <div>@Html.DisplayFor(model => model.Information.City), @Html.DisplayFor(model => model.Information.State)</div>
@@ -20,4 +22,4 @@
             <div class="text-warning">Requires Routing Setup</div>
         </div>
     </div>
-</a>
+</div>

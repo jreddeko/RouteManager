@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Wddc.Services.Routes;
+using Wddc.Core.Entities.EdiOrdering.Routes;
 
 namespace RouteManagement.ViewModels.RouteViewModels
 {
@@ -19,12 +19,13 @@ namespace RouteManagement.ViewModels.RouteViewModels
         [Required]
         public string Description { get; set; }
 
-        public AddRouteViewModel()
+        public AddRouteViewModel() { }
+
+        public AddRouteViewModel(IEnumerable<RouteDTO> routes)
         {
-            var service = new RoutingService();
             RouteDropDownList = new ViewModels.DropDownListViewModel()
             {
-                Items = service.GetAllRoutes()
+                Items = routes
                         .Select(r => new SelectListItem()
                         {
                             Text = String.Format("{0}: #{1}", r.Description, r.RouteNumber),

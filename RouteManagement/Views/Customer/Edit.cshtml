@@ -1,7 +1,7 @@
-﻿@model RouteManagement.ViewModels.MemberViewModels.EditViewModel
+﻿@model RouteManagement.ViewModels.CustomerViewModels.EditViewModel
 
 @{
-    ViewBag.Title = String.Format("Edit ~ #{0}: {1}", Model.MemberNumber,  Model.Member.Information.Name);
+    ViewBag.Title = String.Format("Edit ~ #{0}: {1}", Model.CustomerId,  Model.Customer.Information.CustomerName);
 }
 
 <div class="panel panel-default">
@@ -14,11 +14,11 @@
                 Delivery Settings:
             </div>
             <div class="panel-body">
-                @using (Html.BeginForm("Edit", "Member", FormMethod.Post, new { @class = "form-horizontal" }))
+                @using (Html.BeginForm("Edit", "Customer", FormMethod.Post, new { @class = "form-horizontal" }))
                 {
-                    @Html.HiddenFor(model => model.Member)
-                    @Html.HiddenFor(model => model.MemberNumber)
-                    @Html.HiddenFor(model => model.MemberSettingID)
+                    @Html.HiddenFor(model => model.Customer)
+                    @Html.HiddenFor(model => model.CustomerId)
+                    @Html.HiddenFor(model => model.CustomerSettingID)
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label">Assigned Route</label>

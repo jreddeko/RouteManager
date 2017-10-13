@@ -6,27 +6,36 @@ using RouteManagement.ViewModels;
 using System.Linq;
 using Wddc.Data;
 using System.Collections.Generic;
-using Wddc.Services.Routes;
+using Wddc.Services.EdiOrdering;
+using Wddc.Data.EdiOrdering;
 
 namespace RouteManagement.Tests.Controllers
 {
     [TestClass]
     public class HomeControllerTests : RouteManagementTest
     {
-        private HomeController controller = new HomeController();
+        private HomeController controller;
+        [TestInitialize]
+        public void Setup()
+        {
+            base.Init();
+            controller = new HomeController(_routeService);
+        }
 
         [TestCleanup]
         public void TestCleanup()
         {
-            using (var service = new RouteService())
-            {
-                var memberSettings = service.SearchForMembers(m => m.MemberNumber.Contains("unit test"));
-                foreach (var memberSetting in memberSettings.ToList())
-                    service.DeleteMemberSetting(memberSetting);
-                var routes = service.SearchFor(r => r.Description.Contains("unit test"));
-                foreach (var route in routes.ToList())
-                    service.Delete(route);
-            }
+            var customerSettings = _customerSettingService
+                .GetAllCustomers()
+                .Where(m => m.CustomerId.Contains("unit test"));
+            foreach (var customerSetting in customerSettings.ToList())
+                _customerSettingService
+                    .DeleteCustomerSetting(customerSetting);
+            var routes = _routeService
+                .GetAllRoutes()
+                .Where(r => r.Description.Contains("unit test"));
+            foreach (var route in routes.ToList())
+                _routeService.DeleteRoute(route);
         }
 
         [TestMethod]
@@ -34,26 +43,26 @@ namespace RouteManagement.Tests.Controllers
         {
             var routeToInsert = getTestRoute(999999, "unit test");
             controller.Index(routeToInsert);
-            using (var service = new RouteService())
-            {
-                var addedRoutes = service.SearchFor(r => r.RouteNumber == 999999);
-                Assert.IsTrue(addedRoutes.Count() == 1);
-                var route = addedRoutes.First();
-                Assert.IsTrue(route.Description == routeToInsert.Description);
-                Assert.IsTrue(route.RouteNumber == routeToInsert.RouteNumber);
-                Assert.IsTrue(route.RouteSites.Count() == routeToInsert.RouteSites.Count());
-                Assert.IsTrue(route.RouteSites.SequenceEqual(routeToInsert.RouteSites, new RouteSiteComparer()));
+            var addedRoutes = _routeService
+                .GetAllRoutes()
+                .Where(r => r.RouteNumber == 999999);
+            Assert.IsTrue(addedRoutes.Count() == 1);
+            var route = addedRoutes.First();
+            Assert.IsTrue(route.Description == routeToInsert.Description);
+            Assert.IsTrue(route.RouteNumber == routeToInsert.RouteNumber);
+            Assert.IsTrue(route.RouteSites.Count() == routeToInsert.RouteSites.Count());
+            Assert.IsTrue(route.RouteSites.SequenceEqual(routeToInsert.RouteSites, new RouteSiteComparer()));
 
-                Assert.IsTrue(route.MemberSettings.Count() == routeToInsert.MemberSettings.Count());
-                Assert.IsTrue(route.MemberSettings.SequenceEqual(routeToInsert.MemberSettings, new MemberSettingsComparer()));
-            }
+            Assert.IsTrue(route.CustomerSettings.Count() == routeToInsert.CustomerSettings.Count());
+            Assert.IsTrue(route.CustomerSettings.SequenceEqual(routeToInsert.CustomerSettings, new CustomerSettingsComparer()));
+
         }
 
         [TestMethod]
         public void Index_Post_2()
         {
             var routeToInsert = getTestRoute(999999, "unit test");
-            routeToInsert.MemberSettings.First().PetFoodMoney = -150;
+            routeToInsert.CustomerSettings.First().PetFoodMoney = -150;
             controller.Index(routeToInsert);
 
         }

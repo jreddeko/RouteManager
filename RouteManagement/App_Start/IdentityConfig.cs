@@ -11,7 +11,9 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using RouteManagement.Models;
-using RouteManagement.Models.Services;
+using Wddc.Services.Authentication;
+using Wddc.Core.Authentication;
+using System.Web.Mvc;
 
 namespace RouteManagement
 {
@@ -36,11 +38,16 @@ namespace RouteManagement
     // Configure the application user manager which is used in this application.
     public class ApplicationUserManager : UserManager<ApplicationUser>
     {
-        ActiveDirectoryService _activeDirectoryService = new ActiveDirectoryService("WDDCHO");
+
+        /// <summary>
+        /// overrides login service and uses active directory
+        /// </summary>
+        IActiveDirectoryService _activeDirectoryService;
         public ApplicationUserManager(IUserStore<ApplicationUser> store)
             : base(store)
         {
         }
+
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options,
             IOwinContext context)
         {
@@ -161,10 +168,10 @@ namespace RouteManagement
     // Configure the application sign-in manager which is used in this application.  
     public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
     {
-        ActiveDirectoryService _activeDirectoryService = new ActiveDirectoryService("WDDCHO");
         public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager) :
             base(userManager, authenticationManager)
-        { }
+        {
+        }
 
         public override Task<ClaimsIdentity> CreateUserIdentityAsync(ApplicationUser user)
         {
@@ -183,11 +190,12 @@ namespace RouteManagement
 
         private SignInStatus validateCredentials(string v, string userName, string password)
         {
-            var authorized = _activeDirectoryService.ValidateCredentials(userName, password);
+            var activeDirectoryService = new ActiveDirectoryService();
+            var authorized = activeDirectoryService.ValidateCredentials(userName, password);
             if (!authorized)
                 return SignInStatus.Failure;
 
-            var user = _activeDirectoryService.GetUserByEmail(userName);
+            var user = activeDirectoryService.GetUserByEmail(userName);
 
             IList<Claim> claims = new List<Claim>
             {

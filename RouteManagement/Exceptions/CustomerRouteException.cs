@@ -5,9 +5,9 @@ using System.Web;
 
 namespace RouteManagement.Exceptions
 {
-    public class MemberRouteException : Exception
+    public class CustomerRouteException : Exception
     {
-        public MemberRouteException(string message) : base(message)
+        public CustomerRouteException(string message) : base(message)
         {
         }
     }

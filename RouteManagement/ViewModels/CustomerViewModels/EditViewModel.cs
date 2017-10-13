@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
-using Wddc.Core.Entities.Members;
+using Wddc.Core.Entities.EdiOrdering.Customers;
 
-namespace RouteManagement.ViewModels.MemberViewModels
+namespace RouteManagement.ViewModels.CustomerViewModels
 {
     public class EditViewModel
     {
@@ -15,8 +15,8 @@ namespace RouteManagement.ViewModels.MemberViewModels
         public DropDownListViewModel PetFoodDropDownList { get; set; }
         public bool ShippingCharge { get; set; }
         public decimal PetFoodMoney { get; set; }
-        public string MemberNumber { get; set; }
-        public Member Member { get; internal set; }
-        public int MemberSettingID { get; set; }
+        public string CustomerId { get; set; }
+        public Customer Customer { get; internal set; }
+        public int CustomerSettingID { get; set; }
     }
 }

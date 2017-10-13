@@ -3,6 +3,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Wddc.Core.Infrastructure;
 
 namespace RouteManagement
 {
@@ -10,6 +11,9 @@ namespace RouteManagement
     {
         protected void Application_Start()
         {
+            // sets up engine context from Wddc.Core
+            EngineContext.Initialize(false);
+
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

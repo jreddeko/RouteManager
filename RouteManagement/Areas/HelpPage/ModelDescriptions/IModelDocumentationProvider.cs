@@ -5,7 +5,7 @@ namespace RouteManagement.Areas.HelpPage.ModelDescriptions
 {
     public interface IModelDocumentationProvider
     {
-        string GetDocumentation(MemberInfo member);
+        string GetDocumentation(MemberInfo customer);
 
         string GetDocumentation(Type type);
     }

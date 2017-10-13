@@ -202,9 +202,9 @@ namespace RouteManagement.Areas.HelpPage.ModelDescriptions
         }
 
         // Change this to provide different name for the member.
-        private static string GetMemberName(MemberInfo member, bool hasDataContractAttribute)
+        private static string GetMemberName(MemberInfo customer, bool hasDataContractAttribute)
         {
-            JsonPropertyAttribute jsonProperty = member.GetCustomAttribute<JsonPropertyAttribute>();
+            JsonPropertyAttribute jsonProperty = customer.GetCustomAttribute<JsonPropertyAttribute>();
             if (jsonProperty != null && !String.IsNullOrEmpty(jsonProperty.PropertyName))
             {
                 return jsonProperty.PropertyName;
@@ -212,29 +212,29 @@ namespace RouteManagement.Areas.HelpPage.ModelDescriptions
 
             if (hasDataContractAttribute)
             {
-                DataMemberAttribute dataMember = member.GetCustomAttribute<DataMemberAttribute>();
+                DataMemberAttribute dataMember = customer.GetCustomAttribute<DataMemberAttribute>();
                 if (dataMember != null && !String.IsNullOrEmpty(dataMember.Name))
                 {
                     return dataMember.Name;
                 }
             }
 
-            return member.Name;
+            return customer.Name;
         }
 
-        private static bool ShouldDisplayMember(MemberInfo member, bool hasDataContractAttribute)
+        private static bool ShouldDisplayMember(MemberInfo customer, bool hasDataContractAttribute)
         {
-            JsonIgnoreAttribute jsonIgnore = member.GetCustomAttribute<JsonIgnoreAttribute>();
-            XmlIgnoreAttribute xmlIgnore = member.GetCustomAttribute<XmlIgnoreAttribute>();
-            IgnoreDataMemberAttribute ignoreDataMember = member.GetCustomAttribute<IgnoreDataMemberAttribute>();
-            NonSerializedAttribute nonSerialized = member.GetCustomAttribute<NonSerializedAttribute>();
-            ApiExplorerSettingsAttribute apiExplorerSetting = member.GetCustomAttribute<ApiExplorerSettingsAttribute>();
+            JsonIgnoreAttribute jsonIgnore = customer.GetCustomAttribute<JsonIgnoreAttribute>();
+            XmlIgnoreAttribute xmlIgnore = customer.GetCustomAttribute<XmlIgnoreAttribute>();
+            IgnoreDataMemberAttribute ignoreDataMember = customer.GetCustomAttribute<IgnoreDataMemberAttribute>();
+            NonSerializedAttribute nonSerialized = customer.GetCustomAttribute<NonSerializedAttribute>();
+            ApiExplorerSettingsAttribute apiExplorerSetting = customer.GetCustomAttribute<ApiExplorerSettingsAttribute>();
 
-            bool hasMemberAttribute = member.DeclaringType.IsEnum ?
-                member.GetCustomAttribute<EnumMemberAttribute>() != null :
-                member.GetCustomAttribute<DataMemberAttribute>() != null;
+            bool hasMemberAttribute = customer.DeclaringType.IsEnum ?
+                customer.GetCustomAttribute<EnumMemberAttribute>() != null :
+                customer.GetCustomAttribute<DataMemberAttribute>() != null;
 
-            // Display member only if all the followings are true:
+            // Display customer only if all the followings are true:
             // no JsonIgnoreAttribute
             // no XmlIgnoreAttribute
             // no IgnoreDataMemberAttribute

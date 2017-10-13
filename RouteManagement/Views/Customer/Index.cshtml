@@ -1,0 +1,54 @@
+﻿@model RouteManagement.ViewModels.CustomerViewModels.IndexViewModel
+@using PagedList.Mvc;
+
+<div class="panel panel-default">
+    <div class="panel-heading paper-font-subhead">
+        Members:
+    </div>
+    <div class="panel-body">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                @using (Html.BeginForm("Index", "Customer", FormMethod.Get, new { @class = "form-group" }))
+                {
+                    @Html.HiddenFor(model => model.SetupState)
+                    <div class="input-group">
+                        @Html.TextBoxFor(model => model.Search, new { @class = "form-control", placeholder = "Search for..." })
+                        <span class="input-group-btn">
+                            <button class="btn btn-secondary" type="button">Go!</button>
+                        </span>
+                    </div>
+                    <br />
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon3">Members Setup Status:</span>
+                        @Html.EditorFor(model => model.SetupStatesDropDownList, new { @class = "form-control" })
+                    </div>
+                }
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    @for (int i = 0; i < Model.Customers.Count(); i++)
+                    {
+                        if (Model.Customers[i].SetupState == Wddc.Core.Entities.EdiOrdering.Customers.SetupState.Complete)
+                        {
+                            @Html.Partial("_CustomerCompleteListItem", Model.Customers[i])
+                        }
+                        else if (Model.Customers[i].SetupState == Wddc.Core.Entities.EdiOrdering.Customers.SetupState.PendingRoutingSetup)
+                        {
+                            @Html.Partial("_CustomerPendingRoutingListItem", Model.Customers[i])
+                        }
+                        else if (Model.Customers[i].SetupState == Wddc.Core.Entities.EdiOrdering.Customers.SetupState.PendingShippingSetup)
+                        {
+                            @Html.Partial("_CustomerPendingShippingListItem", Model.Customers[i])
+                        }
+                    }
+                </div>
+                <div class="row">
+                    <div class="col-xs-12 col-xs-offset-4">
+                        @Html.PagedListPager(Model.Customers, page => Url.Action("Index",
+                            new { page, search = Model.Search }))
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

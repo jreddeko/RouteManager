@@ -2,11 +2,22 @@
     el: '#app',
     data: {
         routes: window.preLoadeddata.Routes,
+        selectedRoute: window.preLoadeddata.SelectedRoute,
         calendar: window.preLoadeddata.Calendar,
         routeOriginal: window.preLoadeddata.Routes[0], // selected route
         routeChanged: JSON.parse(JSON.stringify(window.preLoadeddata.Routes[0])), // any changes to route goes here
     },
+    
+    created: function () {
+        if (this.selectedRoute != null) {
+            routeOriginal: this.getRoute(this.selectedRoute.RouteID);
+            this.displayRouteInfo(this.getRoute(this.selectedRoute.RouteID));
+        }            
+    },
+
     methods: {
+
+        // displays route info
         displayRouteInfo(route) {
             if (!this.objectsEqual(this.routeOriginal, this.routeChanged)) {
                 if (confirm('Do you want to save your changes?')) {
@@ -28,6 +39,7 @@
             return value;
         },
 
+        // update route
         onSubmit(route) {
             if (this.objectsEqual(this.routeOriginal, this.routeChanged)) {
                 var alertWarning = document.getElementById('alert-warning');
@@ -43,7 +55,6 @@
                     url: '',
                     data: JSON.stringify(this.routeChanged),
                     contentType: 'application/json; charset=utf-8',
-
                     success: function (data) {
                         this.routes = data.routes;
                         var newRoute = this.routes.filter(function (ele) {
@@ -72,19 +83,27 @@
                 });
             }
         },
+
+        // returns defaultDeliveryDate for route order type and day.
         getDefaultDeliveryDate(day, siteOrderType) {
             return siteOrderType.DeliveryDateDefaults.filter(function (ele) {
                 return day.DayOfWorkWeek === ele.DayOfWeekID;
             })[0];
         },
+
+        // returns either exception or default date for route order type and day.
         getDeliveryDate(day, siteOrderType) {
             var deliveryDateDefault = this.getDefaultDeliveryDate(day, siteOrderType);
             var deliveryDateException = this.getException(day, deliveryDateDefault);
             return deliveryDateException == null ? deliveryDateDefault : deliveryDateException;
         },
+
+        // checks to see if day is an exception for route order type.
         isException(day, siteOrderType) {
             return this.getException(day, this.getDefaultDeliveryDate(day, siteOrderType)) == null ? false : true;
         },
+
+        // returns the exception for that default delivery and date.
         getException(day, deliveryDate) {
 
             var exceptions = deliveryDate.DeliveryDateExceptions.filter(function (ele) {
@@ -95,9 +114,22 @@
             }
             return null;
         },
+
+        getRoute(routeID) {
+            var results = this.routes.filter(function (ele) {
+                return ele.RouteID == routeID;
+            });
+            if (results.length === 1) {
+                return results[0];
+            }
+            return null;
+        },
+
+        // helps to see if routes are equal
         objectsEqual(obj1, obj2) {
             return JSON.stringify(obj1) === JSON.stringify(obj2) ? true : false;
         },
+
         isActive(routeID) {
             return this.routeOriginal.RouteID == routeID;
         },

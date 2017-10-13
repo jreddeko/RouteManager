@@ -11,6 +11,6 @@ namespace RouteManagement.ViewModels.MapViewModels
         public decimal lng { get; set; }
         public string Name { get; set; }
         public string Route { get; set; }
-        public string MemberNumber { get; set; }
+        public string CustomerId { get; set; }
     }
 }

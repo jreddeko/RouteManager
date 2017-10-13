@@ -92,11 +92,11 @@ function setMarkers(map) {
         var marker = new google.maps.Marker({
             position: z,
             map: map,
-            title: element.MemberNumber,
+            title: element.CustomerId,
         });
 
         var infowindow = new google.maps.InfoWindow({
-            content: element.MemberNumber
+            content: element.CustomerId
         });
         marker.addListener('click', function () {
             infowindow.open(map, marker);

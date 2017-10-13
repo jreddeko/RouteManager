@@ -3,19 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Wddc.Data;
+using Wddc.Core.Entities.EdiOrdering.Routes;
 
 namespace RouteManagement.ViewModels
 {
     public class HomeViewModel
     {
-        public HomeViewModel(Route[] routes, Calendar calendar)
-        {
-            this.Routes = routes;
-            this.Calendar = calendar;
-        }
-
-        public Calendar Calendar { get; private set; }
-        public Route[] Routes { get; private set; }
+        public Calendar Calendar { get; set; }
+        public RouteDTO[] Routes { get; set; }
+        public RouteDTO SelectedRoute { get; set; }
     }
 }

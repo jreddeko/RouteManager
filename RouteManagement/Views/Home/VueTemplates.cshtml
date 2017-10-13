@@ -47,45 +47,20 @@
 })
 </script>
 
-<script type="text/x-template" id="daysinc-template">
-    <span>
-        <span class="fa-stack" @@click="showModal = true">
-            <i class="fa fa-circle fa-stack-2x"></i>
-            <span class="fa-stack-1x text-primary">{{ value }}</span>
-        </span>
-        <!-- use the modal component, pass in the prop -->
-        <div class="modal-mask" v-if="showModal">
-            <div class="modal-wrapper">
-                <div class="modal-container">
-                    <div class="modal-header">
-                        <slot name="header">
-                            Set number of days to begin shipping
-                        </slot>
-                    </div>
-
-                    <div class="modal-body">
-                        <slot name="body">
-                            <input type="number"
-                                   ref="input"
-                                   min="0"
-                                   v-bind:value="value"
-                                   v-on:input="updateValue($event.target.value)" />
-                            <button type="button"
-                                    class="modal-default-button"
-                                    @@click="showModal = false">
-                                OK
-                            </button>
-                        </slot>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </span>
-</script>
 
 @* -- END HAS DELIVERY -- *@
 
 @* -- DAYS INCREMENT START-- *@
+
+<script type="text/x-template" id="daysinc-template">
+    <span>
+        <span class="fa-stack" 
+              v-on:click="updateValue()">
+            <i class="fa fa-circle fa-stack-2x"></i>
+            <span class="fa-stack-1x text-primary">{{ inc }}</span>
+        </span>
+    </span>
+</script>
 <script>
     Vue.component('daysinc-info', {
         data: function () {
@@ -94,15 +69,16 @@
             }
         },
         props: {
-            value: {
+            inc: {
                 type: Number,
                 default: 0
             },
         },
         template: '#daysinc-template',
         methods: {
-            updateValue: function (value) {
-                this.$emit('input', Number(value))
+            updateValue: function () {
+                var value = this.inc === 0 ? 1 : 0;
+                this.$emit('change', Number(value))
             },
         }
     })

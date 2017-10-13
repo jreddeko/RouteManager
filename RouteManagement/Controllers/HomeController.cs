@@ -3,33 +3,67 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using Wddc.Data;
+using Wddc.Core.Entities.EdiOrdering.Routes;
+using Wddc.Services.EdiOrdering;
 
 namespace RouteManagement.Controllers
 {
     [Authorize]
-    public class HomeController : RouteManagementController
+    public class HomeController : Controller
     {
-        [HttpGet]
-        public ActionResult Index(DateTime? date, int RouteID = 0)
+        private IRouteService _routeService;
+
+        public HomeController(IRouteService routeService)
         {
-            var calendar = new Calendar(date ?? DateTime.Now);
-            var routes = Service.GetAllRoutes();
-            var viewModel = new ViewModels.HomeViewModel(
-                routes.ToArray(),
-                calendar
-            );
-            var f = viewModel.Routes.First().RouteSites.First().SiteOrderTypes.First().DeliveryDateDefaults.First();
+            this._routeService = routeService;
+        }
+
+        /// <summary>
+        /// Displays the main Route Management page
+        /// </summary>
+        /// <param name="date">date of week to display</param>
+        /// <returns></returns>
+        [HttpGet]
+        public ActionResult Index(DateTime? date, int id = 0)
+        {
+            // get all routes
+            var routes = _routeService
+                .GetAllRoutes();
+
+            RouteDTO selectedRoute = null;
+            if (id != 0)
+                selectedRoute = routes.SingleOrDefault(r => r.RouteID == id);
+            // convert to viewmodel
+            var viewModel = new ViewModels.HomeViewModel()
+            {
+                // get calendar week for date
+                Calendar = new Calendar(date ?? DateTime.Now),
+                Routes = routes.ToArray(),
+                SelectedRoute = selectedRoute,
+            };
+            
+            // return view
             return View(viewModel);
         }
 
+        /// <summary>
+        /// Updates route when changed
+        /// </summary>
+        /// <param name="route">Route updated</param>
+        /// <returns></returns>
         [HttpPost]
-        public ActionResult Index(Route obj)
+        public ActionResult Index(RouteDTO route)
         {
-            if (obj == null)
-                throw new ArgumentNullException("obj");
-            Service.UpdateRoute(obj);
-            var routes = Service.GetAllRoutes();
+            if (route == null)
+                throw new ArgumentNullException("route");
+
+            //update route
+            _routeService.UpdateRoute(route);
+
+            // get all routes
+            var routes = _routeService.GetAllRoutes();
+
+            // return json string of all updated routes
             return Json(new { routes = routes });
         }
     }

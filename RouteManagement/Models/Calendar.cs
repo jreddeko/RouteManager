@@ -5,8 +5,33 @@ using System.Web;
 
 namespace RouteManagement.Models
 {
+    /// <summary>
+    /// WDDC work day.  Sunday -> Saturday
+    /// </summary>
     public class CalendarDay
     {
+        public DateTime Date;
+        public string ShortName { get { return Date.ToString("ddd"); } }
+        public string Name { get { return Date.ToString("dddd"); } }
+        public int Day { get { return Date.Day; } }
+        public int DayOfWorkWeek
+        {
+            get
+            {
+                return GetDayOfWorkWeek(Date);
+            }
+
+        }
+        public CalendarDay(DateTime date)
+        {
+            this.Date = date;
+        }
+
+        /// <summary>
+        /// Retruns WDDC work week day.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
         public static int GetDayOfWorkWeek(DateTime date)
         {
             switch (date.DayOfWeek)
@@ -28,18 +53,10 @@ namespace RouteManagement.Models
             }
             throw new Exception("DayOfWorkWeek not defined for date: " + date.ToString());
         }
-        public DateTime Date;
-        public string ShortName { get { return Date.ToString("ddd"); } }
-        public string Name { get { return Date.ToString("dddd"); } }
-        public int Day { get { return Date.Day; } }
-        public int DayOfWorkWeek
-        {
-            get
-            {
-                return GetDayOfWorkWeek(Date);
-            }
 
-        }
+        /// <summary>
+        /// Returns date string, used in views.
+        /// </summary>
         public string DateString
         {
             get
@@ -47,15 +64,16 @@ namespace RouteManagement.Models
                 return this.Date.ToString("yyyy-MM-dd");
             }
         }
-
-        public CalendarDay(DateTime date)
-        {
-            this.Date = date;
-        }
     }
 
+    /// <summary>
+    /// WDDC Calendar.
+    /// </summary>
     public class Calendar
     {
+        /// <summary>
+        /// Calendar using todays date as starting date.
+        /// </summary>
         public Calendar()
         {
             var date = DateTime.Now;
@@ -66,6 +84,10 @@ namespace RouteManagement.Models
             this.FirstDayOfWeek = date;
         }
 
+        /// <summary>
+        /// Calendar using data as starting date.
+        /// </summary>
+        /// <param name="date"></param>
         public Calendar(DateTime date)
         {
             while (date.DayOfWeek != DayOfWeek.Sunday)
@@ -74,6 +96,10 @@ namespace RouteManagement.Models
             }
             this.FirstDayOfWeek = date;
         }
+
+        /// <summary>
+        /// Returns an array of WDDC calendar days which comprise a week.
+        /// </summary>
         public CalendarDay[] Week
         {
             get

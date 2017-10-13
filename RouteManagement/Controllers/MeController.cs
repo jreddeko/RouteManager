@@ -14,6 +14,9 @@ using RouteManagement.Models;
 
 namespace RouteManagement.Controllers
 {
+    /// <summary>
+    /// Auto generated class to view your account, not really used.
+    /// </summary>
     [Authorize]
     public class MeController : ApiController
     {
@@ -44,7 +47,7 @@ namespace RouteManagement.Controllers
         public GetViewModel Get()
         {
             var user = UserManager.FindById(User.Identity.GetUserId());
-            return new GetViewModel() { Hometown = user.Hometown };
+            return new GetViewModel() { };
         }
     }
 }

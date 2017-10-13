@@ -1,59 +1,60 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Wddc.Core.Entities.EdiOrdering.Routes;
 using Wddc.Data;
 
 namespace RouteManagement.Tests
 {
-    internal class RouteSiteComparer : IEqualityComparer<RouteSite>
+    internal class RouteSiteComparer : IEqualityComparer<RouteSiteDTO>
     {
-        public bool Equals(RouteSite x, RouteSite y)
+        public bool Equals(RouteSiteDTO x, RouteSiteDTO y)
         {
             return x.SiteID == y.SiteID && 
                 x.SiteOrderTypes.SequenceEqual(y.SiteOrderTypes, new SiteOrderTypesComparer());
         }
 
-        public int GetHashCode(RouteSite obj)
+        public int GetHashCode(RouteSiteDTO obj)
         {
             throw new NotImplementedException();
         }
     }
 
-    internal class MemberSettingsComparer : IEqualityComparer<MemberSetting>
+    internal class CustomerSettingsComparer : IEqualityComparer<CustomerSettingDTO>
     {
-        public bool Equals(MemberSetting x, MemberSetting y)
+        public bool Equals(CustomerSettingDTO x, CustomerSettingDTO y)
         {
             return x.DelayedBillingID == y.DelayedBillingID &&
                 x.HasFinancialHold == y.HasFinancialHold &&
                 x.HasShippingCharge == y.HasShippingCharge &&
-                x.MemberNumber == y.MemberNumber &&
+                x.CustomerId == y.CustomerId &&
                 x.PetFoodID == y.PetFoodID &&
                 x.PetFoodMoney == y.PetFoodMoney;
         }
 
-        public int GetHashCode(MemberSetting obj)
+        public int GetHashCode(CustomerSettingDTO obj)
         {
             throw new NotImplementedException();
         }
     }
 
-    internal class SiteOrderTypesComparer : IEqualityComparer<SiteOrderType>
+    internal class SiteOrderTypesComparer : IEqualityComparer<SiteOrderTypeDTO>
     {
-        public bool Equals(SiteOrderType x, SiteOrderType y)
+        public bool Equals(SiteOrderTypeDTO x, SiteOrderTypeDTO y)
         {
             return x.OrderTypeID == y.OrderTypeID && 
                 x.DeliveryDateDefaults.SequenceEqual(y.DeliveryDateDefaults, new DeliveryDateDefaultsComparer());
         }
 
-        public int GetHashCode(SiteOrderType obj)
+        public int GetHashCode(SiteOrderTypeDTO obj)
         {
             throw new NotImplementedException();
         }
     }
 
-    internal class DeliveryDateDefaultsComparer : IEqualityComparer<DeliveryDateDefault>
+    internal class DeliveryDateDefaultsComparer : IEqualityComparer<DeliveryDateDefaultDTO>
     {
-        public bool Equals(DeliveryDateDefault x, DeliveryDateDefault y)
+        public bool Equals(DeliveryDateDefaultDTO x, DeliveryDateDefaultDTO y)
         {
             return x.CutOffString == y.CutOffString &&
                 x.DayOfWeekID == y.DayOfWeekID &&
@@ -63,15 +64,15 @@ namespace RouteManagement.Tests
                 x.DeliveryDateExceptions.SequenceEqual(y.DeliveryDateExceptions, new DeliveryDateExceptionsComparer());
         }
 
-        public int GetHashCode(DeliveryDateDefault obj)
+        public int GetHashCode(DeliveryDateDefaultDTO obj)
         {
             throw new NotImplementedException();
         }
     }
 
-    internal class DeliveryDateExceptionsComparer : IEqualityComparer<DeliveryDateException>
+    internal class DeliveryDateExceptionsComparer : IEqualityComparer<DeliveryDateExceptionDTO>
     {
-        public bool Equals(DeliveryDateException x, DeliveryDateException y)
+        public bool Equals(DeliveryDateExceptionDTO x, DeliveryDateExceptionDTO y)
         {
             return x.CutOffString == y.CutOffString &&
                 x.DeliveryCutOff == y.DeliveryCutOff &&
@@ -80,7 +81,7 @@ namespace RouteManagement.Tests
                 x.Date == y.Date;
         }
 
-        public int GetHashCode(DeliveryDateException obj)
+        public int GetHashCode(DeliveryDateExceptionDTO obj)
         {
             throw new NotImplementedException();
         }
