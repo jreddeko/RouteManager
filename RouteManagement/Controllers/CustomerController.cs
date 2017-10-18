@@ -10,6 +10,9 @@ using RouteManagement.ViewModels;
 using RouteManagement.Exceptions;
 using Wddc.Services.EdiOrdering;
 using Wddc.Core.Entities.EdiOrdering.Customers;
+using Wddc.Core.Entities.EdiOrdering.Routes;
+using Wddc.Services;
+using Wddc.Core;
 
 namespace RouteManagement.Controllers
 {
@@ -29,33 +32,42 @@ namespace RouteManagement.Controllers
         }
 
         [HttpGet]
-        public ActionResult Index(string search, int? page, DropDownListViewModel SetupStatesDropDownList)
+        public ActionResult Index(IndexViewModel model)
         {
-            SetupState state;
-            if (SetupStatesDropDownList?.SelectedValue == null)
-                state = SetupState.Any;
-            else
-                state = (SetupState)Enum.Parse(typeof(SetupState), SetupStatesDropDownList.SelectedValue);
+            var customers = _customerSetupStateService.GetAll(
+                setupStateId: model.SearchSetupStateId ?? 0,
+                routeId: model.SearchRouteId ?? 0,
+                hasShippingCharge: model.SearchShippingChargeId ?? -1,
+                hasFinancialHold: model.SearchFinancialHoldId ?? -1,
+                delayedBillingId: model.SearchDelayedBillingId ?? -1,
+                petFoodId: model.SearchPetFoodId ?? -1,
+                page: model.Page ?? 1,
+                pageSize: 25,
+                search: model.Search);
 
+            model.Customers = customers;
 
-            var customers = _customerSetupStateService.GetAll(state, page ?? 1, 25, search);
-            var model = new IndexViewModel()
-            {
-                Customers = customers,
-                Page = page ?? 1,
-                SetupStatesDropDownList = new ViewModels.DropDownListViewModel()
-                {
-                    Items = Enum.GetNames(typeof(SetupState))
-                        .Select(e => new SelectListItem()
-                        {
-                            Text = e,
-                            Value = e,
-                        }),
-                    SelectedValue = state.ToString(),
-                    OnChangeSubmit = true,
-                },
-                Search = search,
-            };
+            model.AvailableDelayedBillingOptions = CustomerSettingOptionType.DecideOnOrder.ToSelectList(false).ToList();
+            model.AvailableDelayedBillingOptions.Insert(0, new SelectListItem { Text = "All", Value = "-1" });
+
+            model.AvailablePetFoodOptions = CustomerSettingOptionType.DecideOnOrder.ToSelectList(false).ToList();
+            model.AvailablePetFoodOptions.Insert(0, new SelectListItem { Text = "All", Value = "-1" });
+
+            model.AvailableShippingChargeOptions = CustomerSettingOptionType.DecideOnOrder.ToSelectList(false, new int[] { 3 }).ToList();
+            model.AvailableShippingChargeOptions.Insert(0, new SelectListItem { Text = "All", Value = "-1" });
+
+            model.AvailableFinancialHoldOptions = CustomerSettingOptionType.DecideOnOrder.ToSelectList(false, new int[] { 3 }).ToList();
+            model.AvailableFinancialHoldOptions.Insert(0, new SelectListItem { Text = "All", Value = "-1" });
+
+            model.AvailableSetupStateOptions = SetupState.Complete.ToSelectList(false).ToList();
+            model.AvailableSetupStateOptions.Insert(0, new SelectListItem { Text = "All", Value = "0" });
+
+            model.AvailableRouteOptions = _routeService.GetAllRoutes()
+                .Select(v => v as BaseEntity)
+                .ToSelectList(p => (p as RouteDTO).Return(v => v.Description + ": #" + v.RouteNumber, String.Empty))
+                .ToList();
+            model.AvailableRouteOptions.Insert(0, new SelectListItem { Text = "All", Value = "0" });
+
             return View(model);
         }
 
@@ -140,17 +152,17 @@ namespace RouteManagement.Controllers
             var customerSettings = _customerSettingService.GetCustomerSettings(id);
             var assignedRoute = _routeService.GetAllRoutes()
                 .SingleOrDefault(r => r.CustomerSettings.Any(cs => cs.CustomerId == customer.Id));
-            var delayedBillingDropDownList = new ViewModels.DropDownListViewModel()
-                {
-                    Items = _customerSettingService.GetCustomerSettingsOptions()
+            var delayedBillingDropDownList = new DropDownListViewModel()
+            {
+                Items = _customerSettingService.GetCustomerSettingsOptions()
                             .Select(db => new SelectListItem()
                             {
                                 Text = db.Name,
                                 Value = db.CustomerSettingOptionID.ToString(),
                             }),
-                    SelectedValue = customerSettings?.DelayedBillingID.ToString(),
-                };
-            var petFoodDropDownList = new ViewModels.DropDownListViewModel()
+                SelectedValue = customerSettings?.DelayedBillingID.ToString(),
+            };
+            var petFoodDropDownList = new DropDownListViewModel()
             {
                 Items = _customerSettingService.GetCustomerSettingsOptions()
                         .Select(db => new SelectListItem()
@@ -160,7 +172,7 @@ namespace RouteManagement.Controllers
                         }),
                 SelectedValue = customerSettings?.PetFoodID.ToString(),
             };
-            var routeDropDownList = new ViewModels.DropDownListViewModel()
+            var routeDropDownList = new DropDownListViewModel()
             {
                 Items = _routeService.GetAllRoutes()
                         .Select(r => new SelectListItem()
@@ -170,7 +182,7 @@ namespace RouteManagement.Controllers
                         }),
                 SelectedValue = assignedRoute?.RouteID.ToString(),
             };
-            var model = new ViewModels.CustomerViewModels.EditViewModel()
+            var model = new EditViewModel()
             {
                 DelayedBillingDropDownList = delayedBillingDropDownList,
                 PetFoodDropDownList = petFoodDropDownList,
@@ -178,6 +190,7 @@ namespace RouteManagement.Controllers
                 RouteDropDownList = routeDropDownList,
                 ShippingCharge = customerSettings.HasShippingCharge,
                 PetFoodMoney = customerSettings.PetFoodMoney,
+                HasFinancialHold = customerSettings.HasFinancialHold,
                 CustomerId = id,
                 Customer = customer,
             };
@@ -186,14 +199,16 @@ namespace RouteManagement.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(ViewModels.CustomerViewModels.EditViewModel model)
+        public ActionResult Edit(EditViewModel model)
         {
             _customerSettingService.UpdateCustomerRoute(model.CustomerSettingID, Int32.Parse(model.RouteDropDownList.SelectedValue));
-            _customerSettingService.UpdateCustomerSettings(model.CustomerSettingID,
-                Int32.Parse(model.PetFoodDropDownList.SelectedValue),
-                model.PetFoodMoney,
-                model.ShippingCharge,
-                Int32.Parse(model.DelayedBillingDropDownList.SelectedValue));
+            _customerSettingService.UpdateCustomerSettings(
+                id: model.CustomerSettingID,
+                petFoodID: Int32.Parse(model.PetFoodDropDownList.SelectedValue),
+                petFoodMoney: model.PetFoodMoney,
+                shippingCharge: model.ShippingCharge,
+                delayedBillingID: Int32.Parse(model.DelayedBillingDropDownList.SelectedValue),
+                hasFinancialHold: model.HasFinancialHold);
             return RedirectToAction("Edit", new { id = model.CustomerId });
         }
 

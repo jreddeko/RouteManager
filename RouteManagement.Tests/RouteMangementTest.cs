@@ -34,13 +34,14 @@ namespace RouteManagement.Tests
             var orderTypeRepository = MockRepository.GenerateMock<IEdiRepository<OrderType>>();
             var routeRepository = MockRepository.GenerateMock<IEdiRepository<Route>>();
             var defaultDateRepository = MockRepository.GenerateMock<IEdiRepository<DeliveryDateDefault>>();
+            var routeSiteRepository = MockRepository.GenerateMock<IEdiRepository<RouteSite>>();
             var siteOrderTypeRepository = MockRepository.GenerateMock<IEdiRepository<SiteOrderType>>();
             var exceptionDateRepository = MockRepository.GenerateMock<IEdiRepository<DeliveryDateException>>();
             var customerRepostiory = MockRepository.GenerateMock<IGpRepository<RM00101>>();
             var customerService = new CustomerService(customerRepostiory);
             _routeService = new RouteService(dayOfWeekRepository,
                 orderTypeRepository, routeRepository, defaultDateRepository,
-                siteOrderTypeRepository, exceptionDateRepository, customerService);
+                siteOrderTypeRepository, exceptionDateRepository, routeSiteRepository, customerService);
             var gpCustomerRepository = MockRepository.GenerateMock<IGpRepository<RM00101>>();
             gpCustomerRepository
                 .Expect(x => x.Table)

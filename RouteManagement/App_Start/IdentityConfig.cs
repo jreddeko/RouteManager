@@ -36,24 +36,18 @@ namespace RouteManagement
     }
 
     // Configure the application user manager which is used in this application.
-    public class ApplicationUserManager : UserManager<ApplicationUser>
+    public class ApplicationUserManager : UserManager<ActiveDirectoryUser>
     {
-
-        /// <summary>
-        /// overrides login service and uses active directory
-        /// </summary>
-        IActiveDirectoryService _activeDirectoryService;
-        public ApplicationUserManager(IUserStore<ApplicationUser> store)
+        public ApplicationUserManager(ActiveDirectoryUserStore store)
             : base(store)
         {
         }
-
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options,
             IOwinContext context)
         {
-            var manager = new ApplicationUserManager(new UserStore<ApplicationUser>(context.Get<ApplicationDbContext>()));
+            var manager = new ApplicationUserManager(new ActiveDirectoryUserStore(new ActiveDirectoryService()));
             // Configure validation logic for usernames
-            manager.UserValidator = new UserValidator<ApplicationUser>(manager)
+            manager.UserValidator = new UserValidator<ActiveDirectoryUser>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
                 RequireUniqueEmail = true
@@ -76,11 +70,11 @@ namespace RouteManagement
 
             // Register two factor authentication providers. This application uses Phone and Emails as a step of receiving a code for verifying the user
             // You can write your own provider and plug it in here.
-            manager.RegisterTwoFactorProvider("Phone Code", new PhoneNumberTokenProvider<ApplicationUser>
+            manager.RegisterTwoFactorProvider("Phone Code", new PhoneNumberTokenProvider<ActiveDirectoryUser>
             {
                 MessageFormat = "Your security code is {0}"
             });
-            manager.RegisterTwoFactorProvider("Email Code", new EmailTokenProvider<ApplicationUser>
+            manager.RegisterTwoFactorProvider("Email Code", new EmailTokenProvider<ActiveDirectoryUser>
             {
                 Subject = "Security Code",
                 BodyFormat = "Your security code is {0}"
@@ -91,89 +85,21 @@ namespace RouteManagement
             if (dataProtectionProvider != null)
             {
                 manager.UserTokenProvider =
-                    new DataProtectorTokenProvider<ApplicationUser>(dataProtectionProvider.Create("ASP.NET Identity"));
+                    new DataProtectorTokenProvider<ActiveDirectoryUser>(dataProtectionProvider.Create("ASP.NET Identity"));
             }
             return manager;
-        }
-        public override Task<ApplicationUser> FindAsync(string userName, string password)
-        {
-            if (_activeDirectoryService.ValidateCredentials(userName, password))
-                return Task.Run(() => _activeDirectoryService.GetUser(userName));
-            else
-                return null;
-        }
-
-        public override Task<ApplicationUser> FindAsync(UserLoginInfo login)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<ApplicationUser> FindByEmailAsync(string email)
-        {
-            return Task.Run(() => _activeDirectoryService.GetUserByEmail(email));
-        }
-
-        public override Task<ApplicationUser> FindByIdAsync(string userId)
-        {
-            return Task.Run(() => _activeDirectoryService.GetUser(userId));
-        }
-
-        public override Task<ApplicationUser> FindByNameAsync(string userName)
-        {
-            return Task.Run(() => _activeDirectoryService.GetUser(userName));
-        }
-
-        public override Task<IdentityResult> ChangePhoneNumberAsync(string userId, string phoneNumber, string token)
-        {
-            throw new NotImplementedException();
-        }
-        public override Task<string> GetPhoneNumberAsync(string userId)
-        {
-            return Task.Run(() => _activeDirectoryService.GetUser(userId).PhoneNumber);
-        }
-
-        public override Task<IdentityResult> SetPhoneNumberAsync(string userId, string phoneNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<string> GenerateChangePhoneNumberTokenAsync(string userId, string phoneNumber)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<bool> IsPhoneNumberConfirmedAsync(string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<IList<string>> GetRolesAsync(string userId)
-        {
-            return Task.Run(() => _activeDirectoryService.GetRoles(userId));
-        }
-
-        public override Task<ClaimsIdentity> CreateIdentityAsync(ApplicationUser user, string authenticationType)
-        {
-            IList<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.UserName),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Name, user.UserName),
-            };
-
-            return Task.Run(() => new ClaimsIdentity(claims, authenticationType));
         }
     }
 
     // Configure the application sign-in manager which is used in this application.  
-    public class ApplicationSignInManager : SignInManager<ApplicationUser, string>
+    public class ApplicationSignInManager : SignInManager<ActiveDirectoryUser, string>
     {
         public ApplicationSignInManager(ApplicationUserManager userManager, IAuthenticationManager authenticationManager) :
             base(userManager, authenticationManager)
         {
         }
 
-        public override Task<ClaimsIdentity> CreateUserIdentityAsync(ApplicationUser user)
+        public override Task<ClaimsIdentity> CreateUserIdentityAsync(ActiveDirectoryUser user)
         {
             return user.GenerateUserIdentityAsync((ApplicationUserManager)UserManager);
         }

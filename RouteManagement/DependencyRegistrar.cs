@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
+using Wddc.Core.Configuration;
 using Wddc.Core.Data;
 using Wddc.Core.Fakes;
 using Wddc.Core.Infrastructure;
@@ -36,7 +37,7 @@ namespace RouteManagement
             }
         }
 
-        public void Register(ContainerBuilder builder, ITypeFinder typeFinder)
+        public void Register(ContainerBuilder builder, ITypeFinder typeFinder, WddcConfig config)
         {
             //HTTP context and other related stuff
             builder.Register(c =>
@@ -62,12 +63,6 @@ namespace RouteManagement
 
             //register all controllers
             builder.RegisterControllers(typeFinder.GetAssemblies().ToArray());
-
-            var efDataProviderManager = new EfDataProviderManager();
-            var dataProviders = efDataProviderManager.LoadDataProviders();
-
-            foreach (var dataProvider in dataProviders)
-                dataProvider.InitConnectionFactory();
 
             // register EF object contexts
             builder.Register<EdiObjectContext>(c => new EdiObjectContext()).InstancePerLifetimeScope();

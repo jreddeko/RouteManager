@@ -1,5 +1,6 @@
 ﻿@model RouteManagement.ViewModels.CustomerViewModels.IndexViewModel
 @using PagedList.Mvc;
+@using RouteManagement;
 
 <div class="panel panel-default">
     <div class="panel-heading paper-font-subhead">
@@ -10,7 +11,6 @@
             <div class="panel-heading">
                 @using (Html.BeginForm("Index", "Customer", FormMethod.Get, new { @class = "form-group" }))
                 {
-                    @Html.HiddenFor(model => model.SetupState)
                     <div class="input-group">
                         @Html.TextBoxFor(model => model.Search, new { @class = "form-control", placeholder = "Search for..." })
                         <span class="input-group-btn">
@@ -18,10 +18,53 @@
                         </span>
                     </div>
                     <br />
-                    <div class="input-group">
-                        <span class="input-group-addon" id="basic-addon3">Members Setup Status:</span>
-                        @Html.EditorFor(model => model.SetupStatesDropDownList, new { @class = "form-control" })
-                    </div>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <div class="input-group">
+                                @Html.LabelFor(model => model.AvailableSetupStateOptions)
+                                @Html.NopDropDownList("SearchSetupStateId", Model.AvailableSetupStateOptions)
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-xs-9">
+                            <div class="input-group">
+                                @Html.LabelFor(model => model.AvailableRouteOptions)
+                                @Html.NopDropDownList("SearchRouteId", Model.AvailableRouteOptions)
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="input-group">
+                                @Html.LabelFor(model => model.AvailableDelayedBillingOptions)
+                                @Html.NopDropDownList("SearchDelayedBillingId", Model.AvailableDelayedBillingOptions)
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="input-group">
+                                @Html.LabelFor(model => model.AvailablePetFoodOptions)
+                                @Html.NopDropDownList("SearchPetFoodId", Model.AvailablePetFoodOptions)
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="input-group">
+                                @Html.LabelFor(model => model.AvailableShippingChargeOptions)
+                                @Html.NopDropDownList("SearchShippingChargeId", Model.AvailableShippingChargeOptions)
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-xs-3">
+                            <div class="input-group">
+                                @Html.LabelFor(model => model.AvailableFinancialHoldOptions)
+                                @Html.NopDropDownList("SearchFinancialHoldId", Model.AvailableFinancialHoldOptions)
+                            </div>
+                            <br />
+                        </div>
+                        <div class="col-xs-12">
+                            <input type="submit" class="btn btn-success pull-right" value="Search..." />
+                        </div>
+                        </div>
                 }
             </div>
             <div class="panel-body">
@@ -45,7 +88,16 @@
                 <div class="row">
                     <div class="col-xs-12 col-xs-offset-4">
                         @Html.PagedListPager(Model.Customers, page => Url.Action("Index",
-                            new { page, search = Model.Search }))
+                            new 
+                            {   Page = page,
+                                Search = Model.Search,
+                                SearchShippingChargeId = Model.SearchShippingChargeId,
+                                SearchDelayedBillingId = Model.SearchDelayedBillingId,
+                                SearchPetFoodId = Model.SearchPetFoodId,
+                                SearchSetupStateId = Model.SearchSetupStateId,
+                                SearchRouteId = Model.SearchRouteId,
+                                SearchFinancialHoldId = Model.SearchFinancialHoldId,
+                            }))     
                     </div>
                 </div>
             </div>

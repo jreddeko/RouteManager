@@ -87,7 +87,7 @@
         </div>
         <div class="panel panel-default">
             <div class="panel-heading paper-font-subhead">
-                <span>{{ routeChanged.Description }} Customers</span>
+                <a v-bind:href="'@Url.Action("Index", "Customer")/?SearchRouteId=' + routeChanged.Id">{{ routeChanged.Description }} Customers</a>
             </div>
             <div class="list-group p3">
                 <a v-for="customerSetting in routeChanged.CustomerSettings" 

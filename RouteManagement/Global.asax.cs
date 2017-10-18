@@ -19,6 +19,8 @@ namespace RouteManagement
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // add for ActiveDirectory claims
             System.Web.Helpers.AntiForgeryConfig.UniqueClaimTypeIdentifier =
                 System.Security.Claims.ClaimTypes.NameIdentifier;
         }
