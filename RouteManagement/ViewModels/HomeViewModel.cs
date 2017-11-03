@@ -10,6 +10,7 @@ namespace RouteManagement.ViewModels
     public class HomeViewModel
     {
         public Calendar Calendar { get; set; }
+        public bool CanEditRoute { get; set; }
         public RouteDTO[] Routes { get; set; }
         public RouteDTO SelectedRoute { get; set; }
     }

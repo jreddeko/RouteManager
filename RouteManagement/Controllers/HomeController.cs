@@ -40,6 +40,7 @@ namespace RouteManagement.Controllers
                 Calendar = new Calendar(date ?? DateTime.Now),
                 Routes = routes.ToArray(),
                 SelectedRoute = selectedRoute,
+                CanEditRoute = true //User.IsInRole("Warehouse Manager") || User.IsInRole("IT"),
             };
             
             // return view

@@ -61,6 +61,14 @@
                             </div>
                             <br />
                         </div>
+
+                        <div class="col-xs-3">
+                            <div class="input-group">
+                                @Html.LabelFor(model => model.AvailableSortOptions)
+                                @Html.NopDropDownList("SortId", Model.AvailableSortOptions)
+                            </div>
+                            <br />
+                        </div>
                         <div class="col-xs-12">
                             <input type="submit" class="btn btn-success pull-right" value="Search..." />
                         </div>
@@ -97,6 +105,7 @@
                                 SearchSetupStateId = Model.SearchSetupStateId,
                                 SearchRouteId = Model.SearchRouteId,
                                 SearchFinancialHoldId = Model.SearchFinancialHoldId,
+                                SortId = Model.SortId,
                             }))     
                     </div>
                 </div>

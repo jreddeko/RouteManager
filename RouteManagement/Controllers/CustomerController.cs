@@ -43,9 +43,12 @@ namespace RouteManagement.Controllers
                 petFoodId: model.SearchPetFoodId ?? -1,
                 page: model.Page ?? 1,
                 pageSize: 25,
+                sort: model.SortId ?? 0,
                 search: model.Search);
 
             model.Customers = customers;
+
+            model.AvailableSortOptions = CustomerSettingSortType.CustomerId.ToSelectList(true).ToList();
 
             model.AvailableDelayedBillingOptions = CustomerSettingOptionType.DecideOnOrder.ToSelectList(false).ToList();
             model.AvailableDelayedBillingOptions.Insert(0, new SelectListItem { Text = "All", Value = "-1" });
@@ -71,6 +74,7 @@ namespace RouteManagement.Controllers
             return View(model);
         }
 
+        //[Authorize(Roles = "Client Service Representative, Director of Client Services, IT")]
         [HttpPost]
         public ActionResult Add(AddViewModel model)
         {
@@ -89,6 +93,7 @@ namespace RouteManagement.Controllers
             return View(model);
         }
 
+        //[Authorize(Roles = "Client Service Representative, Director of Client Services, IT")]
         [HttpGet]
         public ActionResult Add(string id)
         {
@@ -193,11 +198,14 @@ namespace RouteManagement.Controllers
                 HasFinancialHold = customerSettings.HasFinancialHold,
                 CustomerId = id,
                 Customer = customer,
+                CanEditFinancialHold = true, // User.IsInRole("Finance") || User.IsInRole("IT"),
+                CanEditCustomerSettings = true // User.IsInRole("Client Service Representative") || User.IsInRole("Director of Client Services") || User.IsInRole("IT"),
             };
 
             return View(model);
         }
 
+        //[Authorize(Roles = "Client Service Representative, Director of Client Services, IT")]
         [HttpPost]
         public ActionResult Edit(EditViewModel model)
         {

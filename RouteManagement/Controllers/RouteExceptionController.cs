@@ -45,6 +45,7 @@ namespace RouteManagement.Controllers
         /// Add Exception page
         /// </summary>
         /// <returns></returns>
+        //[Authorize(Roles = "Warehouse Manager, IT")]
         [HttpGet]
         public ActionResult Add()
         {
@@ -69,7 +70,7 @@ namespace RouteManagement.Controllers
             // returns view
             return View(model);
         }
-
+        //[Authorize(Roles = "Warehouse Manager, IT")]
         [HttpPost]
         public ActionResult Add(AddRouteExceptionViewModel model)
         {
@@ -95,6 +96,7 @@ namespace RouteManagement.Controllers
         /// </summary>
         /// <param name="exceptionDate">Date of exception to delete</param>
         /// <returns></returns>
+        //[Authorize(Roles = "Warehouse Manager, IT")]
         public ActionResult Delete(DateTime exceptionDate)
         {
             _routeExceptionService.Delete(exceptionDate);

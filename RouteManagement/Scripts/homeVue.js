@@ -1,4 +1,13 @@
-﻿var vm = new Vue({
+﻿$(document).ready(function() {
+    $(window).keydown(function(event){
+        if(event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+        }
+    });
+});
+
+var vm = new Vue({
     el: '#app',
     data: {
         routes: window.preLoadeddata.Routes,
@@ -6,6 +15,7 @@
         calendar: window.preLoadeddata.Calendar,
         routeOriginal: window.preLoadeddata.Routes[0], // selected route
         routeChanged: JSON.parse(JSON.stringify(window.preLoadeddata.Routes[0])), // any changes to route goes here
+        canEditRoute: JSON.parse(JSON.stringify(window.preLoadeddata.CanEditRoute)),
     },
     
     created: function () {
@@ -14,12 +24,16 @@
             this.displayRouteInfo(this.getRoute(this.selectedRoute.RouteID));
         }            
     },
-
+    computed: {
+        orderedUsers: function () {
+            return _.orderBy(this.routeChanged.CustomSettings, 'CustomerId')
+        }
+    },
     methods: {
 
         // displays route info
         displayRouteInfo(route) {
-            if (!this.objectsEqual(this.routeOriginal, this.routeChanged)) {
+            if (this.canEditRoute && !this.objectsEqual(this.routeOriginal, this.routeChanged)) {
                 if (confirm('Do you want to save your changes?')) {
                     this.onSubmit(route);
                 }

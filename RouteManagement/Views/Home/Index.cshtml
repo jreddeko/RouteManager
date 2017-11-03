@@ -2,8 +2,8 @@
 @{
     var jsonModel = Html.Raw(Json.Encode(Model));
 }
-@section vueHomePage{    
-<script src="https://unpkg.com/vue"></script>
+@section vueHomePage{
+    <script src="~/Scripts/vue.min.js"></script>
 }
 <script>
     var model = @Html.Raw(jsonModel);
@@ -25,13 +25,13 @@
                    key="route.RouteID"
                    class="list-group-item list-group-item-action"
                    v-on:click="displayRouteInfo(route)">
-                        {{route.Description}}: #{{route.RouteNumber}}
+                    {{route.Description}}: #{{route.RouteNumber}}
                 </a>
             </div>
         </div>
     </div>
     <div class="col-xs-12 col-sm-9">
-              
+
         @* -- ROUTE DESCRIPTION -- *@
         <div class="panel panel-default">
             <div class="panel-heading paper-font-subhead">
@@ -63,25 +63,29 @@
                                 <tr v-for="siteOrderType in routeSite.SiteOrderTypes">
                                     <td class="order-type">{{ siteOrderType.OrderType.Name }}</td>
                                     <td v-for="day in calendar.Week" v-bind:class="{ exception: isException(day, siteOrderType) }">
-                                            <delivery-info id="show-modal"
-                                                           v-bind:delivery="getDeliveryDate(day, siteOrderType).HasDelivery"
-                                                           v-on:change="delivery => {getDeliveryDate(day, siteOrderType).HasDelivery = delivery }">
-                                            </delivery-info>
-                                            <daysinc-info v-if="getDeliveryDate(day, siteOrderType).HasDelivery"
-                                                          v-bind:inc="getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays"
-                                                          v-on:change="inc => {getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays = inc }"
-                                                          onmouseover="" style="cursor: pointer;">
-                                            </daysinc-info>
-                                            <cutoff-info v-if="getDeliveryDate(day, siteOrderType).HasDelivery && getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays === 0"
-                                                         v-model="getDeliveryDate(day, siteOrderType).CutOffString"></cutoff-info>
+                                        <delivery-info id="show-modal"
+                                                       v-bind:delivery="getDeliveryDate(day, siteOrderType).HasDelivery"
+                                                       v-on:change="delivery => { if (canEditRoute) getDeliveryDate(day, siteOrderType).HasDelivery = delivery }">
+                                        </delivery-info>
+                                        <daysinc-info v-if="getDeliveryDate(day, siteOrderType).HasDelivery"
+                                                      v-bind:inc="getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays"
+                                                      v-on:change="inc => { if (canEditRoute) getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays = inc }"
+                                                      onmouseover="" style="cursor: pointer;">
+                                        </daysinc-info>
+                                        <cutoff-info v-if="getDeliveryDate(day, siteOrderType).HasDelivery && getDeliveryDate(day, siteOrderType).IncrementDeliveryByDays === 0"
+                                                     v-bind:can-edit-Route="canEditRoute"
+                                                     v-model="getDeliveryDate(day, siteOrderType).CutOffString"></cutoff-info>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <div class="btn-group pull-right route-button-group" data-toggle="buttons">
-                        <button type="submit" class="btn btn-success" v-on:click="onSubmit(routeChanged)">Save Changes</button>
-                    </div>
+                    @if (Model.CanEditRoute)
+                    {
+                        <div class="btn-group pull-right route-button-group" data-toggle="buttons">
+                            <button type="submit" class="btn btn-success" v-on:click="onSubmit(routeChanged)">Save Changes</button>
+                        </div>
+                    }
                 </form>
             </div>
         </div>
@@ -90,11 +94,12 @@
                 <a v-bind:href="'@Url.Action("Index", "Customer")/?SearchRouteId=' + routeChanged.Id">{{ routeChanged.Description }} Customers</a>
             </div>
             <div class="list-group p3">
-                <a v-for="customerSetting in routeChanged.CustomerSettings" 
-                   v-bind:href="'@Url.Action("Edit","Customer")/' + customerSetting.CustomerId" 
-                   class="list-group-item list-group-item-action"> {{ customerSetting.CustomerId }} - {{ customerSetting.CustomerName }}</a>
+                <a v-for="customerSetting in routeChanged.CustomerSettings"
+                   v-bind:href="'@Url.Action("Edit","Customer")/' + customerSetting.CustomerId"
+                   class="list-group-item list-group-item-action">{{ customerSetting.CustomerId }}-{{ customerSetting.CustomerName }}</a>
             </div>
         </div>
     </div>
 </div>
 @Html.Partial("VueTemplates")
+

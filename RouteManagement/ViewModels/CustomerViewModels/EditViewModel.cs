@@ -24,10 +24,13 @@ namespace RouteManagement.ViewModels.CustomerViewModels
         [Display(Name = "Financial Hold:")]
         public bool HasFinancialHold { get; set; }
 
+        public bool CanEditFinancialHold { get; set; }
+
         [Display(Name = "Pet Food:")]
         public decimal PetFoodMoney { get; set; }
         public string CustomerId { get; set; }
-        public Customer Customer { get; internal set; }
+        public Customer Customer { get; set; }
         public int CustomerSettingID { get; set; }
+        public bool CanEditCustomerSettings { get; set; }
     }
 }

@@ -1,0 +1,4 @@
+﻿@model RouteManagement.ViewModels.DropDownListViewModel
+
+@Html.DropDownListFor(model => model.SelectedValue, Model.Items, new { @class= "form-control", @disabled = "disabled" })
+

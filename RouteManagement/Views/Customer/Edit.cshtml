@@ -23,7 +23,15 @@
                     <div class="form-group">
                         <label class="col-sm-2 control-label">@Html.DisplayNameFor(model => model.RouteDropDownList)</label>
                         <div class="col-sm-8">
-                            @Html.EditorFor(model => model.RouteDropDownList, new { @class = "form-control" })
+                            @if (Model.CanEditCustomerSettings)
+                            {
+                                @Html.EditorFor(model => model.RouteDropDownList, new { @class = "form-control" })
+                            }
+                            else
+                            {
+                                @Html.DisplayFor(model => model.RouteDropDownList, new { @class = "form-control" })
+                                @Html.HiddenFor(model => model.RouteDropDownList.SelectedValue)
+                            }
                         </div>
                     </div>
 
@@ -33,7 +41,15 @@
                                 <label class="col-sm-6 control-label">@Html.DisplayNameFor(model => model.PetFoodDropDownList)</label>
                                 <div class="col-sm-6">
                                     <label>
-                                        @Html.EditorFor(model => model.PetFoodDropDownList, new { @class = "form-control" })
+                                        @if (Model.CanEditCustomerSettings)
+                                        {
+                                            @Html.EditorFor(model => model.PetFoodDropDownList, new { @class = "form-control" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(model => model.PetFoodDropDownList, new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.PetFoodDropDownList.SelectedValue)
+                                        }
                                     </label>
                                 </div>
                             </div>
@@ -44,7 +60,15 @@
                                 <label class="col-sm-6 control-label">@Html.DisplayNameFor(model => model.DelayedBillingDropDownList)</label>
                                 <div class="col-sm-6">
                                     <label>
-                                        @Html.EditorFor(model => model.DelayedBillingDropDownList, new { @class = "form-control" })
+                                        @if (Model.CanEditCustomerSettings)
+                                        {
+                                            @Html.EditorFor(model => model.DelayedBillingDropDownList, new { @class = "form-control" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(model => model.DelayedBillingDropDownList, new { @class = "form-control" })
+                                            @Html.HiddenFor(model => model.DelayedBillingDropDownList.SelectedValue)
+                                        }
                                     </label>
                                 </div>
                             </div>
@@ -53,7 +77,15 @@
                             <div class="form-group">
                                 <label class="col-sm-6 control-label">@Html.DisplayNameFor(model => model.PetFoodMoney)</label>
                                 <div class="col-sm-6">
+                                    @if (Model.CanEditCustomerSettings)
+                                    {
                                         @Html.TextBoxFor(model => model.PetFoodMoney, new { @class = "form-control" })
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(model => model.PetFoodMoney, new { @class = "form-control", @disabled="disabled" })
+                                        @Html.HiddenFor(model => model.PetFoodMoney)
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -65,7 +97,15 @@
                                 <label class="col-sm-6 control-label">@Html.DisplayNameFor(model => model.ShippingCharge)</label>
                                 <div class="col-sm-6 checkbox">
                                     <label>
-                                        @Html.CheckBoxFor(model => model.ShippingCharge)
+                                        @if (Model.CanEditCustomerSettings)
+                                        {
+                                            @Html.CheckBoxFor(model => model.ShippingCharge)
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(model => model.ShippingCharge)
+                                            @Html.HiddenFor(model => model.ShippingCharge)
+                                        }
                                     </label>
                                 </div>
                             </div>
@@ -75,15 +115,26 @@
                                 <label class="col-sm-6 control-label">@Html.DisplayNameFor(model => model.HasFinancialHold)</label>
                                 <div class="col-sm-6 checkbox">
                                     <label>
-                                        @Html.CheckBoxFor(model => model.HasFinancialHold)
+                                        @if (Model.CanEditFinancialHold)
+                                        {
+                                            @Html.CheckBoxFor(model => model.HasFinancialHold)
+                                        }
+                                        else
+                                        {
+                                            @Html.DisplayFor(model => model.HasFinancialHold)
+                                            @Html.HiddenFor(model => model.HasFinancialHold)
+                                        }
                                     </label>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="btn-group pull-right route-button-group">
-                        <button type="submit" class="btn btn-success">Save Changes</button>
-                    </div>
+                    if (Model.CanEditCustomerSettings || Model.CanEditFinancialHold)
+                    {
+                        <div class="btn-group pull-right route-button-group">
+                            <button type="submit" class="btn btn-success">Save Changes</button>
+                        </div>
+                    }
                 }
             </div>
         </div>

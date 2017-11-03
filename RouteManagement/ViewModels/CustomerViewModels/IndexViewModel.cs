@@ -31,6 +31,10 @@ namespace RouteManagement.ViewModels.CustomerViewModels
         [Display(Name = "Assigned Route")]
         public IList<SelectListItem> AvailableRouteOptions { get; set; }
 
+        [Display(Name = "Sort")]
+        public IList<SelectListItem> AvailableSortOptions { get; set; }
+
+        public int? SortId { get; set; }
         public int? SearchShippingChargeId { get; set; }
         public int? SearchDelayedBillingId { get; set; }
         public int? SearchRouteId { get; set; }

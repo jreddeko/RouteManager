@@ -25,7 +25,6 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <ApplicationInsightsResourceId>/subscriptions/04fd36c4-3164-4b53-9e8c-36d09852712e/resourcegroups/Default-ApplicationInsights-EastUS/providers/microsoft.insights/components/RouteManagement</ApplicationInsightsResourceId>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -176,7 +175,6 @@
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net45\System.Diagnostics.DiagnosticSource.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.DirectoryServices.AccountManagement" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Net.Http" />
@@ -237,32 +235,12 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="Wddc">
-      <HintPath>..\lib\Wddc.dll</HintPath>
-    </Reference>
-    <Reference Include="Wddc.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Wddc\Wddc.Core\bin\Debug\Wddc.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Wddc.Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Wddc\Wddc.Data\bin\Debug\Wddc.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Wddc.Services">
-      <HintPath>..\..\Wddc\Wddc.Services\bin\Debug\Wddc.Services.dll</HintPath>
-    </Reference>
     <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="App_Start\IdentityConfig.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />
     <Compile Include="Areas\HelpPage\Controllers\HelpController.cs" />
@@ -312,7 +290,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\ApplicationOAuthProvider.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
-    <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CustomerViewModels\CustomerFilterOptionsViewModel.cs" />
     <Compile Include="ViewModels\DropDownListViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
@@ -369,9 +346,6 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <Content Include="ApplicationInsights.config">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\font-awesome-4.7.0\fonts\fontawesome-webfont.eot" />
     <Content Include="Content\font-awesome-4.7.0\fonts\fontawesome-webfont.ttf" />
     <Content Include="Content\font-awesome-4.7.0\fonts\fontawesome-webfont.woff" />
@@ -490,6 +464,9 @@
     <Content Include="Content\bootstrap\bootstrap.less" />
     <Content Include="Content\bootstrap\badges.less" />
     <Content Include="Content\bootstrap\alerts.less" />
+    <Content Include="ApplicationInsights.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Properties\PublishProfiles\DEV.pubxml" />
     <None Include="Properties\PublishProfiles\Prod.pubxml" />
     <None Include="Properties\PublishProfiles\TEST.pubxml" />
@@ -518,6 +495,7 @@
     <Content Include="Scripts\sammy-0.7.5.js" />
     <Content Include="Scripts\sammy-0.7.5.min.js" />
     <Content Include="Scripts\spinner.js" />
+    <Content Include="Scripts\vue.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Scripts\app\_run.js" />
     <Content Include="Scripts\app\app.datamodel.js" />
@@ -561,7 +539,6 @@
     <Content Include="Web.Release.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
-    <Content Include="Service References\Application Insights\ConnectedService.json" />
     <Content Include="Views\Home\_DeliveryInfoPartial.cshtml" />
     <Content Include="Views\Shared\_HeaderPartial.cshtml" />
     <Content Include="Views\Home\VueTemplates.cshtml" />
@@ -578,6 +555,7 @@
     <Content Include="Views\Route\Add.cshtml" />
     <Content Include="Views\Map\Index.cshtml" />
     <Content Include="Views\RouteException\Index.cshtml" />
+    <Content Include="Views\Shared\DisplayTemplates\DropDownListViewModel.cshtml" />
     <None Include="Web.Test.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -594,6 +572,24 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\MessagingDBWeb\Wddc.Web.Framework\Wddc.Web.Framework.csproj">
+      <Project>{63bc8b68-54b6-4f2c-bf0d-5ec16300c339}</Project>
+      <Name>Wddc.Web.Framework</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Wddc\Wddc.Core\Wddc.Core.csproj">
+      <Project>{435e02d6-a6a4-4df5-a95c-9634c72114e8}</Project>
+      <Name>Wddc.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Wddc\Wddc.Data\Wddc.Data.csproj">
+      <Project>{a409a5ac-d29e-4282-9667-7a2f6f372f35}</Project>
+      <Name>Wddc.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Wddc\Wddc.Services\Wddc.Services.csproj">
+      <Project>{fe48b5c8-9a45-4d1d-8468-184edf8d6b8f}</Project>
+      <Name>Wddc.Services</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

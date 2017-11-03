@@ -8,7 +8,7 @@ using Wddc.Services.EdiOrdering;
 
 namespace RouteManagement.Controllers
 {
-    [Authorize]
+    //[Authorize(Roles = "Warehouse Manager, IT")]
     public class RouteController : Controller
     {
         private IRouteService _routeService;

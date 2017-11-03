@@ -1,4 +1,5 @@
-﻿/* BRANDING */
+﻿@import url('https://fonts.googleapis.com/css?family=Roboto');
+/* BRANDING */
 .ul.nav.navbar-nav {
     
   font-family: 'Roboto', 'Noto', sans-serif;
@@ -103,4 +104,14 @@ button.btn.btn-success {
     background-color:#E0E0E0;
     border-color: #BDBDBD;
     color:black;
+}
+
+.alert {
+    position: absolute;
+    top: 50px;
+    left: 0px;
+    width: 100%;
+    z-index: 9999;
+    border-radius: 0px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }

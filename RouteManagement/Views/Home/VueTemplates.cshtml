@@ -32,7 +32,7 @@
                 href: "#",
             },
             on: {
-                click: this.clickHandler
+                click: this.clickHandler,
             },
         },
             [stack1Icon, stack2Icon]);
@@ -85,9 +85,13 @@
 </script>
 
 
+@* -- DAYS INCREMENT END-- *@
+
+@* -- CUTOFF START-- *@
+
 <script type="text/x-template" id="cutoff-template">
     <div>
-        <span @@click="showModal = true">
+        <span @@click="showModal = canEditRoute ? true : false">
             <i class="fa fa-clock-o"></i>
             <span class="text-info">{{ value }}</span>
         </span>
@@ -120,10 +124,6 @@
         </div>
     </div>
 </script>
-@* -- DAYS INCREMENT END-- *@
-
-@* -- CUTOFF START-- *@
-
 <script>
     Vue.component('cutoff-info', {
         data: function () {
@@ -134,6 +134,9 @@
         props: {
             value: {
                 type: String,
+            },
+            canEditRoute: {
+                type: Boolean,
             },
         },
         template: '#cutoff-template',
